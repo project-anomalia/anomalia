@@ -1,9 +1,5 @@
 package anomalia
 
-import (
-	"sort"
-)
-
 type TimeSeries struct {
 	Timestamps []float64
 	Values     []float64
@@ -35,10 +31,9 @@ func (ts *TimeSeries) LastestTimestamp() float64 {
 // Zip convert the time series to a map (map[Timestamp]Value)
 func (ts *TimeSeries) Zip() map[float64]float64 {
 	m := make(map[float64]float64)
-	sort.Slice(ts.Timestamps, func(i, j int) bool {
-		return ts.Timestamps[i] < ts.Timestamps[j]
-	})
-	for idx, timestamp := range ts.Timestamps {
+	sorted := SortedCopy(ts.Timestamps)
+
+	for idx, timestamp := range sorted {
 		m[timestamp] = ts.Values[idx]
 	}
 	return m
