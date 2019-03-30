@@ -1,5 +1,6 @@
 package anomalia
 
+// TimeSeries wrapper for timestamps and their values
 type TimeSeries struct {
 	Timestamps []float64
 	Values     []float64
@@ -18,20 +19,20 @@ func NewTimeSeries(timestamps []float64, values []float64) *TimeSeries {
 
 // EarliestTimestamp returns the earliest timestamp in the time series
 func (ts *TimeSeries) EarliestTimestamp() float64 {
-	min, _ := MinMax(ts.Timestamps)
+	min, _ := minMax(ts.Timestamps)
 	return min
 }
 
 // LastestTimestamp returns the latest timestamp in the time series
 func (ts *TimeSeries) LastestTimestamp() float64 {
-	_, max := MinMax(ts.Timestamps)
+	_, max := minMax(ts.Timestamps)
 	return max
 }
 
 // Zip convert the time series to a map (map[Timestamp]Value)
 func (ts *TimeSeries) Zip() map[float64]float64 {
 	m := make(map[float64]float64)
-	sorted := SortedCopy(ts.Timestamps)
+	sorted := sortedCopy(ts.Timestamps)
 
 	for idx, timestamp := range sorted {
 		m[timestamp] = ts.Values[idx]
@@ -41,22 +42,22 @@ func (ts *TimeSeries) Zip() map[float64]float64 {
 
 // AddOffset increments time series timestamps by some offset
 func (ts *TimeSeries) AddOffset(offset float64) *TimeSeries {
-	offsettedTimestamps := Map(ts.Timestamps, func(timestamp float64) float64 { return timestamp + offset })
+	offsettedTimestamps := mapSlice(ts.Timestamps, func(timestamp float64) float64 { return timestamp + offset })
 	return NewTimeSeries(offsettedTimestamps, ts.Values)
 }
 
 // Normalize normalizes the time series values by dividing by the maximum value
 func (ts *TimeSeries) Normalize() *TimeSeries {
-	_, max := MinMax(ts.Values)
-	normalizedValues := Map(ts.Values, func(value float64) float64 { return value / max })
+	_, max := minMax(ts.Values)
+	normalizedValues := mapSlice(ts.Values, func(value float64) float64 { return value / max })
 	return NewTimeSeries(ts.Timestamps, normalizedValues)
 }
 
 // NormalizeWithMinMax normalizes time series values using MixMax
 func (ts *TimeSeries) NormalizeWithMinMax() *TimeSeries {
 	normalizedValues := ts.Values
-	if min, max := MinMax(ts.Values); min != max {
-		normalizedValues = Map(ts.Values, func(value float64) float64 { return value - min/max - min })
+	if min, max := minMax(ts.Values); min != max {
+		normalizedValues = mapSlice(ts.Values, func(value float64) float64 { return value - min/max - min })
 	}
 	return NewTimeSeries(ts.Timestamps, normalizedValues)
 }
@@ -65,7 +66,7 @@ func (ts *TimeSeries) NormalizeWithMinMax() *TimeSeries {
 func (ts *TimeSeries) Crop(start, end float64) *TimeSeries {
 	zippedSeries := ts.Zip()
 	// Filter timestamps within the crop range
-	timestamps := Filter(ts.Timestamps, func(timestamp float64) bool {
+	timestamps := filter(ts.Timestamps, func(timestamp float64) bool {
 		return (timestamp >= start) && (timestamp <= end)
 	})
 
@@ -80,7 +81,7 @@ func (ts *TimeSeries) Crop(start, end float64) *TimeSeries {
 // Average calculates average value over the time series
 func (ts *TimeSeries) Average() float64 {
 	total := 0.0
-	values := CopySlice(ts.Values)
+	values := copySlice(ts.Values)
 	for _, v := range values {
 		total += v
 	}
@@ -89,7 +90,7 @@ func (ts *TimeSeries) Average() float64 {
 
 // Median calculates median value over the time series.
 func (ts *TimeSeries) Median() float64 {
-	sorted := SortedCopy(ts.Values)
+	sorted := sortedCopy(ts.Values)
 	len := len(sorted)
 	mid := len / 2
 
