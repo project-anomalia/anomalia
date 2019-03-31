@@ -1,6 +1,9 @@
 package anomalia
 
-import "sort"
+import (
+	"math"
+	"sort"
+)
 
 type Mapper func(float64) float64
 type Predicate func(float64) bool
@@ -47,4 +50,13 @@ func sortedCopy(input []float64) (copy []float64) {
 	copy = copySlice(input)
 	sort.Float64s(copy)
 	return
+}
+
+func roundFloat(num float64) int {
+	return int(num + math.Copysign(0.5, num))
+}
+
+func Float64WithPrecision(num float64, precision int) float64 {
+	output := math.Pow(10, float64(precision))
+	return float64(roundFloat(num*output)) / output
 }
