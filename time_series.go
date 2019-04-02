@@ -80,12 +80,12 @@ func (ts *TimeSeries) Crop(start, end float64) *TimeSeries {
 
 // Average calculates average value over the time series
 func (ts *TimeSeries) Average() float64 {
-	total := 0.0
-	values := copySlice(ts.Values)
-	for _, v := range values {
-		total += v
-	}
-	return total / float64(len(values))
+	return Average(ts.Values)
+}
+
+// Stdev calculates the standard deviation of the time series
+func (ts *TimeSeries) Stdev() float64 {
+	return Stdev(ts.Values)
 }
 
 // Median calculates median value over the time series.

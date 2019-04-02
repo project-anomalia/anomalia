@@ -82,7 +82,7 @@ func TestCrop(t *testing.T) {
 	}
 }
 
-func TestAverage(t *testing.T) {
+func TestTimeSeriesAverage(t *testing.T) {
 	actual := NewTimeSeries(timestamps, values).Average()
 	expected := float64(0.424107)
 	if actual != expected {
