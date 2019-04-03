@@ -62,3 +62,25 @@ func TestPdf(t *testing.T) {
 		t.Fatalf("expected %v, got %v", expected, actual)
 	}
 }
+
+func TestCdf(t *testing.T) {
+	actual := Cdf(0.0, 1.0)(1.0)
+	expected := 0.8413447361676363
+	if actual != expected {
+		t.Fatalf("expected %v, got %v", expected, actual)
+	}
+}
+
+func TestErf(t *testing.T) {
+	actual := Erf(1.0)
+	expected := 0.8427006897475899
+	if actual != expected {
+		t.Fatalf("expected %v, got %v", expected, actual)
+	}
+
+	actual = Erf(-1.0)
+	expected = -expected
+	if actual != expected {
+		t.Fatalf("expected %v, got %v", expected, actual)
+	}
+}
