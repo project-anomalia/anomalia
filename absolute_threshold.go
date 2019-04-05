@@ -11,21 +11,15 @@ func (at *AbsoluteThreshold) Run(timeSeries *TimeSeries) *ScoreList {
 }
 
 func (at *AbsoluteThreshold) computeScores(timeSeries *TimeSeries) (*ScoreList, error) {
-	var (
-		score  float64
-		scores []float64 = make([]float64, 0, len(timeSeries.Values))
-	)
-	for _, value := range timeSeries.Values {
+	scores := mapSlice(timeSeries.Values, func(value float64) float64 {
 		if value > at.UpperThreshold {
-			score = value - at.UpperThreshold
+			return value - at.UpperThreshold
 		} else if value < at.LowerThreshold {
-			score = at.LowerThreshold - value
+			return at.LowerThreshold - value
 		} else {
-			score = 0.0
+			return 0.0
 		}
-		scores = append(scores, score)
-	}
-
+	})
 	scoreList := &ScoreList{
 		Timestamps: timeSeries.Timestamps,
 		Scores:     scores,
