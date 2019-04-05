@@ -13,18 +13,15 @@ func (nd *NormalDistribution) computeScores(timeSeries *TimeSeries) (*ScoreList,
 	mean := timeSeries.Average()
 	std := timeSeries.Stdev()
 
-	var (
-		score  float64
-		scores []float64 = make([]float64, 0, len(timeSeries.Values))
-	)
-
-	for _, value := range timeSeries.Values {
-		score = Pdf(mean, std)(value)
-		if score >= nd.EpsilonThreshold {
-			score = 0.0
+	scores := mapSlice(timeSeries.Values, func(value float64) float64 {
+		score := Pdf(mean, std)(value)
+		if score < nd.EpsilonThreshold {
+			return score
+		} else {
+			return 0.0
 		}
-		scores = append(scores, score)
-	}
+	})
+
 	scoreList := &ScoreList{
 		Timestamps: timeSeries.Timestamps,
 		Scores:     scores,
