@@ -85,3 +85,16 @@ func Erf(x float64) float64 {
 	y := 1.0 - ((((a5*t+a4)*t+a3)*t+a2)*t+a1)*t*math.Pow(math.E, -x*x)
 	return sign * y
 }
+
+// Ema returns the exponnential moving average of the input
+func Ema(input []float64, smoothingFactor float64) []float64 {
+	ema := make([]float64, 0, len(input))
+	if len(input) > 0 {
+		ema = append(ema, input[0])
+	}
+
+	for i := 1; i < len(input); i++ {
+		ema = append(ema, smoothingFactor*input[i]+(1-smoothingFactor)*ema[i-1])
+	}
+	return ema
+}

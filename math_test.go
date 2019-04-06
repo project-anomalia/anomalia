@@ -84,3 +84,11 @@ func TestErf(t *testing.T) {
 		t.Fatalf("expected %v, got %v", expected, actual)
 	}
 }
+
+func TestEma(t *testing.T) {
+	data := []float64{0.5, 5.0, 2.0, 2.0}
+	expected := Ema(data, 0.2)
+	if len(data) != len(expected) {
+		t.Fatalf("input and ema lenghts do not match")
+	}
+}
