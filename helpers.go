@@ -4,8 +4,9 @@ import (
 	"sort"
 )
 
-type Mapper func(float64) float64
-type Predicate func(float64) bool
+type mapper func(float64) float64
+type mapperWithIndex func(int, float64) float64
+type predicate func(float64) bool
 
 func minMax(data []float64) (float64, float64) {
 	var (
@@ -23,14 +24,21 @@ func minMax(data []float64) (float64, float64) {
 	return min, max
 }
 
-func mapSlice(slice []float64, mapper Mapper) []float64 {
+func mapSlice(slice []float64, mapper mapper) []float64 {
 	for idx, value := range slice {
 		slice[idx] = mapper(value)
 	}
 	return slice
 }
 
-func filter(slice []float64, predicate Predicate) (ret []float64) {
+func mapSliceWithIndex(slice []float64, mapper mapperWithIndex) []float64 {
+	for idx, value := range slice {
+		slice[idx] = mapper(idx, value)
+	}
+	return slice
+}
+
+func filter(slice []float64, predicate predicate) (ret []float64) {
 	for _, value := range slice {
 		if predicate(value) {
 			ret = append(ret, value)
