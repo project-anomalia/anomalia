@@ -58,3 +58,16 @@ func sortedCopy(input []float64) (copy []float64) {
 	sort.Float64s(copy)
 	return
 }
+
+func insertAt(slice []float64, pos int, elem float64) []float64 {
+	if pos < 0 {
+		pos = 0
+	} else if pos >= len(slice) {
+		pos = len(slice)
+	}
+	out := make([]float64, len(slice)+1)
+	copy(out[:pos], slice[:pos])
+	out[pos] = elem
+	copy(out[pos+1:], slice[pos:])
+	return out
+}
