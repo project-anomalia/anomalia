@@ -25,17 +25,19 @@ func minMax(data []float64) (float64, float64) {
 }
 
 func mapSlice(slice []float64, mapper mapper) []float64 {
-	for idx, value := range slice {
-		slice[idx] = mapper(value)
+	result := make([]float64, 0, len(slice))
+	for _, value := range slice {
+		result = append(result, mapper(value))
 	}
-	return slice
+	return result
 }
 
 func mapSliceWithIndex(slice []float64, mapper mapperWithIndex) []float64 {
+	result := make([]float64, 0, len(slice))
 	for idx, value := range slice {
-		slice[idx] = mapper(idx, value)
+		result = append(result, mapper(idx, value))
 	}
-	return slice
+	return result
 }
 
 func filter(slice []float64, predicate predicate) (ret []float64) {
