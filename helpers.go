@@ -73,3 +73,14 @@ func insertAt(slice []float64, pos int, elem float64) []float64 {
 	copy(out[pos+1:], slice[pos:])
 	return out
 }
+
+func mapIntKeys(dict map[int]float64) []int {
+	keys := make([]int, len(dict))
+	i := 0
+	for key := range dict {
+		keys[i] = key
+		i++
+	}
+	sort.Ints(keys)
+	return keys
+}
