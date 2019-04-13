@@ -83,8 +83,8 @@ func TestCrop(t *testing.T) {
 }
 
 func TestTimeSeriesAverage(t *testing.T) {
-	actual := NewTimeSeries(timestamps, values).Average()
-	expected := float64(0.424107)
+	actual := Float64WithPrecision(NewTimeSeries(timestamps, values).Average(), 2)
+	expected := Float64WithPrecision(1.36, 2)
 	if actual != expected {
 		t.Fatalf("expected %f, got %f", expected, actual)
 	}
@@ -93,15 +93,15 @@ func TestTimeSeriesAverage(t *testing.T) {
 func TestMedian(t *testing.T) {
 	ts := NewTimeSeries(timestamps, values)
 
-	actual := ts.Median()
-	expected := 0.312500
+	actual := Float64WithPrecision(ts.Median(), 2)
+	expected := Float64WithPrecision(1.00, 2)
 	if expected != actual {
 		t.Fatalf("expected %f, got %f", expected, actual)
 	}
 
 	ts = ts.Crop(0, 8)
-	actual = ts.Median()
-	expected = 0.312500
+	actual = Float64WithPrecision(ts.Median(), 2)
+	expected = Float64WithPrecision(1.45, 2)
 	if expected != actual {
 		t.Fatalf("expected %f, got %f", expected, actual)
 	}
