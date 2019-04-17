@@ -1,10 +1,13 @@
 package anomalia
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"strings"
 )
+
+const minimalPointsInWindows = 50
 
 type Bitmap struct {
 	ChunkSize        int
@@ -19,6 +22,9 @@ func (bit *Bitmap) Run(timeSeries *TimeSeries) *ScoreList {
 }
 
 func (bit *Bitmap) computeScores(timeSeries *TimeSeries) (*ScoreList, error) {
+	if _, err := bit.sanityCheck(timeSeries); err != nil {
+		return nil, err
+	}
 	sax := bit.generateSAX(timeSeries)
 	laggingsMaps, futureMaps := bit.constructAllSAXChunks(timeSeries, sax)
 	dimension := len(timeSeries.Timestamps)
@@ -145,4 +151,12 @@ func (bit *Bitmap) constructAllSAXChunks(timeSeries *TimeSeries, sax BitmapBinar
 		}
 	}
 	return laggingsMaps, futureMaps
+}
+
+func (bit *Bitmap) sanityCheck(timeSeries *TimeSeries) (*TimeSeries, error) {
+	windowsDimension := bit.LagWindowSize + bit.FutureWindowSize
+	if (len(timeSeries.Timestamps) < windowsDimension) || (windowsDimension < minimalPointsInWindows) {
+		return nil, errors.New("not enough data points")
+	}
+	return timeSeries, nil
 }
