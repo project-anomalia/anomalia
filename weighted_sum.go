@@ -2,6 +2,9 @@ package anomalia
 
 import "math"
 
+// WeightedSum holds the weighted sum algorithm configuration.
+// The weighted sum algorithm uses a weighted sum to calculate anomalies scores.
+// It should be used ONLY on small datasets
 type WeightedSum struct {
 	EmaWeight      float64
 	EmaSignificant float64
@@ -9,6 +12,17 @@ type WeightedSum struct {
 	*Derivative
 }
 
+// NewWeightedSum returns weighted sum instance
+func NewWeightedSum() *WeightedSum {
+	return &WeightedSum{
+		EmaWeight:                0.65,
+		EmaSignificant:           0.94,
+		ExponentialMovingAverage: &ExponentialMovingAverage{2, 0.2},
+		Derivative:               &Derivative{0.2},
+	}
+}
+
+// Run runs the weighted sum algorithm over the time series
 func (ws *WeightedSum) Run(timeSeries *TimeSeries) *ScoreList {
 	scoreList, _ := ws.computeScores(timeSeries)
 	return scoreList

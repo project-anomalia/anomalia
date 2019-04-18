@@ -1,8 +1,6 @@
 package anomalia
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestRunWithNormalDistribution(t *testing.T) {
 	timeSeries := &TimeSeries{
@@ -10,7 +8,7 @@ func TestRunWithNormalDistribution(t *testing.T) {
 		Values:     []float64{56, 59, 52, 49, 49, 1.5, 48, 50, 53, 44},
 	}
 
-	scoreList := (&NormalDistribution{0.0025}).Run(timeSeries)
+	scoreList := NewNormalDistribution().Run(timeSeries)
 	if scoreList == nil {
 		t.Fatalf("score list cannot be nil")
 	}
