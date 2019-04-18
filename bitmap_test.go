@@ -29,13 +29,7 @@ func TestRunWithBitmap(t *testing.T) {
 	//
 	// Run the bitmap algorithm
 	//
-	bitmap := &Bitmap{
-		ChunkSize:        2,
-		Precision:        4,
-		LagWindowSize:    int(0.0125 * float64(datasetSize)),
-		FutureWindowSize: int(0.0125 * float64(datasetSize)),
-	}
-
+	bitmap := NewBitmap()
 	scoreList := bitmap.Run(timeSeries)
 	if scoreList == nil {
 		t.Fatalf("score list cannot be nil")

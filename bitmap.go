@@ -9,6 +9,10 @@ import (
 
 const minimalPointsInWindows = 50
 
+// Bitmap holds bitmap algorithm configuration.
+// The bitmap algorithm breaks the time series into chunks and uses
+// the frequency of similar chunks to determine anomalies scores.
+// The scoring happens by sliding both lagging and future windows.
 type Bitmap struct {
 	ChunkSize        int
 	Precision        int
@@ -16,6 +20,17 @@ type Bitmap struct {
 	FutureWindowSize int
 }
 
+// NewBitmap returns Bitmap instance
+func NewBitmap() *Bitmap {
+	return &Bitmap{
+		ChunkSize:        2,
+		Precision:        4,
+		LagWindowSize:    25,
+		FutureWindowSize: 25,
+	}
+}
+
+// Run runs the bitmap algorithm over the time series
 func (bit *Bitmap) Run(timeSeries *TimeSeries) *ScoreList {
 	scoreList, _ := bit.computeScores(timeSeries)
 	return scoreList
@@ -103,7 +118,7 @@ func (bit *Bitmap) constructChunkFrequencyMap(sax BitmapBinary) map[BitmapBinary
 	for i := 0; i < saxLength; i++ {
 		if i+bit.ChunkSize <= saxLength {
 			chunk := sax.Slice(i, i+bit.ChunkSize)
-			frequencyMap[chunk] += 1
+			frequencyMap[chunk]++
 		}
 	}
 	return frequencyMap
@@ -133,13 +148,13 @@ func (bit *Bitmap) constructAllSAXChunks(timeSeries *TimeSeries, sax BitmapBinar
 				fwEnterChunk = sax.Slice(i+fws+1-chunkSize, i+fws+1)
 			} else {
 				lagMap := laggingsMaps[i-1]
-				lagMap[lwLeaveChunk] -= 1
-				lagMap[lwEnterChunk] += 1
+				lagMap[lwLeaveChunk]--
+				lagMap[lwEnterChunk]++
 				laggingsMaps[i] = lagMap
 
 				futureMap := futureMaps[i-1]
-				futureMap[fwLeaveChunk] -= 1
-				futureMap[fwEnterChunk] += 1
+				futureMap[fwLeaveChunk]--
+				futureMap[fwEnterChunk]++
 				futureMaps[i] = futureMap
 
 				// Update leave and enter chunks
