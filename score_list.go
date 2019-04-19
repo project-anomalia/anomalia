@@ -8,6 +8,25 @@ type ScoreList struct {
 	Scores     []float64
 }
 
+// Denoise sets low(noisy) scores to 0.0
+func (sl *ScoreList) Denoise() *ScoreList {
+	threshold := noisePercentageThreshold * sl.Max()
+
+	denoised := mapSlice(sl.Scores, func(score float64) float64 {
+		if score < threshold {
+			return 0.0
+		}
+		return score
+	})
+	return &ScoreList{sl.Timestamps, denoised}
+}
+
+// Max returns the maximum of the scores
+func (sl *ScoreList) Max() float64 {
+	_, max := minMax(sl.Scores)
+	return max
+}
+
 // Zip convert the score list to map (map[Timestamp]Score)
 func (sl *ScoreList) Zip() map[float64]float64 {
 	m := make(map[float64]float64)
@@ -17,19 +36,4 @@ func (sl *ScoreList) Zip() map[float64]float64 {
 		m[timestamp] = sl.Scores[idx]
 	}
 	return m
-}
-
-// Denoise sets low(noisy) scores to 0.0
-func (sl *ScoreList) Denoise() *ScoreList {
-	_, max := minMax(sl.Scores)
-	threshold := noisePercentageThreshold * max
-
-	denoised := mapSlice(sl.Scores, func(score float64) float64 {
-		if score < threshold {
-			return 0.0
-		} else {
-			return score
-		}
-	})
-	return &ScoreList{sl.Timestamps, denoised}
 }
