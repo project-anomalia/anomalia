@@ -10,21 +10,7 @@ func TestRunWithBitmap(t *testing.T) {
 	//
 	// Generate the data set
 	//
-	datasetSize := 2000
-	timestamps := make([]float64, datasetSize)
-	for i := 0; i < datasetSize; i++ {
-		timestamps[i] = float64(i) + 1
-	}
-
-	generator := rand.New(rand.NewSource(time.Now().UnixNano()))
-	values := make([]float64, datasetSize)
-	for i := 0; i < datasetSize; i++ {
-		values[i] = generator.Float64() * 10
-	}
-	timeSeries := &TimeSeries{
-		Timestamps: timestamps,
-		Values:     values,
-	}
+	timeSeries := generateFakeTimeSeries(2000)
 
 	//
 	// Run the bitmap algorithm
@@ -50,4 +36,17 @@ func TestRunWithBitmap(t *testing.T) {
 	if scoreList != nil {
 		t.Fatalf("score list must be nil (not enough data points)")
 	}
+}
+
+func generateFakeTimeSeries(datasetSize int) *TimeSeries {
+	timestamps := make([]float64, datasetSize)
+	for i := 0; i < datasetSize; i++ {
+		timestamps[i] = float64(i) + 1
+	}
+	generator := rand.New(rand.NewSource(time.Now().UnixNano()))
+	values := make([]float64, datasetSize)
+	for i := 0; i < datasetSize; i++ {
+		values[i] = generator.Float64() * 10
+	}
+	return &TimeSeries{timestamps, values}
 }
