@@ -2,8 +2,8 @@ package anomalia
 
 import (
 	"errors"
-	"fmt"
 	"math"
+	"strconv"
 	"strings"
 )
 
@@ -25,8 +25,8 @@ func NewBitmap() *Bitmap {
 	return &Bitmap{
 		ChunkSize:        2,
 		Precision:        4,
-		LagWindowSize:    25,
-		FutureWindowSize: 25,
+		LagWindowSize:    0,
+		FutureWindowSize: 0,
 	}
 }
 
@@ -37,6 +37,11 @@ func (bit *Bitmap) Run(timeSeries *TimeSeries) *ScoreList {
 }
 
 func (bit *Bitmap) computeScores(timeSeries *TimeSeries) (*ScoreList, error) {
+	// Update both lagging and future windows size
+	bit.LagWindowSize = int(0.0125 * float64(len(timeSeries.Timestamps)))
+	bit.FutureWindowSize = int(0.0125 * float64(len(timeSeries.Timestamps)))
+
+	// Perform sanity check
 	if _, err := bit.sanityCheck(timeSeries); err != nil {
 		return nil, err
 	}
@@ -64,12 +69,11 @@ func (bit *Bitmap) computeScores(timeSeries *TimeSeries) (*ScoreList, error) {
 				score += math.Pow(float64(futureWindowChunk[chunk]), 2)
 			}
 		}
-
 		return score
 	}
 
 	scores := mapSliceWithIndex(timeSeries.Timestamps, func(idx int, timestamp float64) float64 {
-		if (idx < bit.LagWindowSize) || (idx > dimension-bit.FutureWindowSize) {
+		if (idx < bit.LagWindowSize) || (idx > (dimension - bit.FutureWindowSize)) {
 			return 0.0
 		}
 		return computeScoreBetweenTwoWindows(idx)
@@ -101,7 +105,7 @@ func (bit *Bitmap) generateSAX(timeSeries *TimeSeries) BitmapBinary {
 				break
 			}
 		}
-		return fmt.Sprintf("%v", sax)
+		return strconv.Itoa(sax)
 	}
 
 	var saxBuilder strings.Builder
