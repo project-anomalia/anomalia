@@ -4,11 +4,20 @@ import (
 	"math"
 )
 
+// ExponentialMovingAverage holds the algorithm configuration.
+// It uses the value's deviation from the exponential moving average of a lagging window
+// to determine anomalies scores.
 type ExponentialMovingAverage struct {
 	LagWindowSize   int
 	SmoothingFactor float64
 }
 
+// NewEma returns ExponentialMovingAverage instance
+func NewEma() *ExponentialMovingAverage {
+	return &ExponentialMovingAverage{2, 0.2}
+}
+
+// Run runs the exponential moving average algorithm over the time series
 func (ema *ExponentialMovingAverage) Run(timeSeries *TimeSeries) *ScoreList {
 	scoreList, _ := ema.computeScores(timeSeries)
 	return scoreList

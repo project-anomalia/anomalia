@@ -10,7 +10,7 @@ func TestRunWithEma(t *testing.T) {
 		Values:     []float64{56, 59, 52, 49, 49, 1.5, 48, 50, 53, 44},
 	}
 
-	scoreList := (&ExponentialMovingAverage{2, 0.2}).Run(timeSeries)
+	scoreList := NewEma().Run(timeSeries)
 	if scoreList == nil {
 		t.Fatalf("score list cannot be nil")
 	}
