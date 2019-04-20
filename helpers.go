@@ -10,8 +10,8 @@ type predicate func(float64) bool
 
 func minMax(data []float64) (float64, float64) {
 	var (
-		max float64 = data[0]
-		min float64 = data[0]
+		max = data[0]
+		min = data[0]
 	)
 	for _, value := range data {
 		if max < value {
@@ -83,4 +83,13 @@ func mapIntKeys(dict map[int]float64) []int {
 	}
 	sort.Ints(keys)
 	return keys
+}
+
+func indexOf(slice []float64, value float64) int {
+	for idx := range slice {
+		if slice[idx] == value {
+			return idx
+		}
+	}
+	return -1
 }
