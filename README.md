@@ -6,13 +6,13 @@
 
 Installation is done using `go get`:
 
-```
+```shell
 go get -u github.com/amrfaissal/anomalia
 ```
 
 ## Supported Go Versions
 
-`anomalia` is supported and tested on the last 3 major Go versions.
+`anomalia` supports `Go >= 1.10`.
 
 ## Supported algorithms & Usage
 
