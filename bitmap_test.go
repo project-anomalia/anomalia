@@ -2,8 +2,14 @@ package anomalia
 
 import (
 	"math/rand"
+	"sync"
 	"testing"
 	"time"
+)
+
+var (
+	mu        sync.Mutex
+	generator = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
 
 func TestRunWithBitmap(t *testing.T) {
@@ -43,10 +49,11 @@ func generateFakeTimeSeries(datasetSize int) *TimeSeries {
 	for i := 0; i < datasetSize; i++ {
 		timestamps[i] = float64(i) + 1
 	}
-	generator := rand.New(rand.NewSource(time.Now().UnixNano()))
+	mu.Lock()
 	values := make([]float64, datasetSize)
 	for i := 0; i < datasetSize; i++ {
-		values[i] = generator.Float64() * 10
+		values[i] = RandomSineValue(generator, datasetSize)
 	}
+	defer mu.Unlock()
 	return &TimeSeries{timestamps, values}
 }

@@ -2,6 +2,7 @@ package anomalia
 
 import (
 	"math"
+	"math/rand"
 )
 
 // Average returns the average of the input
@@ -97,4 +98,15 @@ func Ema(input []float64, smoothingFactor float64) []float64 {
 		ema = append(ema, smoothingFactor*input[i]+(1-smoothingFactor)*ema[i-1])
 	}
 	return ema
+}
+
+// RandomSineValue returns sine of value between [0, limit] using a rand source
+func RandomSineValue(rand *rand.Rand, limit int) float64 {
+	var (
+		frequency       = 440
+		samplingRate    = 44100
+		signalAmplitude = 10
+	)
+	x := 2 * math.Pi * float64(frequency*rand.Intn(limit)) / float64(samplingRate)
+	return math.Abs(math.Sin(x) * float64(signalAmplitude))
 }
