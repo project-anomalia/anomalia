@@ -2,7 +2,7 @@ package anomalia
 
 import "unicode/utf8"
 
-// Binary wrapper type around a string with custom behaviour
+// BitmapBinary wrapper type around a string with custom behaviour
 type BitmapBinary string
 
 // Slice slices a string in a pythonic way
