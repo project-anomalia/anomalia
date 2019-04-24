@@ -24,14 +24,10 @@ func (nd *NormalDistribution) computeScores(timeSeries *TimeSeries) (*ScoreList,
 		score := Pdf(mean, std)(value)
 		if score < nd.EpsilonThreshold {
 			return score
-		} else {
-			return 0.0
 		}
+		return 0.0
 	})
 
-	scoreList := &ScoreList{
-		Timestamps: timeSeries.Timestamps,
-		Scores:     scores,
-	}
+	scoreList := &ScoreList{timeSeries.Timestamps, scores}
 	return scoreList, nil
 }

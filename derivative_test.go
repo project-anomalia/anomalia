@@ -1,8 +1,6 @@
 package anomalia
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestRunWithDerivative(t *testing.T) {
 	timeSeries := &TimeSeries{
