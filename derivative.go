@@ -1,13 +1,19 @@
 package anomalia
 
-import (
-	"math"
-)
+import "math"
 
+// Derivative holds the derivative algorithm configuration.
+// It uses the derivative of the current value as anomaly score.
 type Derivative struct {
 	SmoothingFactor float64
 }
 
+// NewDerivative return Derivative instance
+func NewDerivative(smoothingFactor float64) *Derivative {
+	return &Derivative{smoothingFactor}
+}
+
+// Run runs the derivative algorithm over the time series
 func (d *Derivative) Run(timeSeries *TimeSeries) *ScoreList {
 	scoreList, _ := d.computeScores(timeSeries)
 	return scoreList
@@ -15,11 +21,11 @@ func (d *Derivative) Run(timeSeries *TimeSeries) *ScoreList {
 
 func (d *Derivative) computeScores(timeSeries *TimeSeries) (*ScoreList, error) {
 	derivatives := d.computeDerivatives(timeSeries)
-	derivatives_ema := Ema(derivatives, d.SmoothingFactor)
+	derivativesEma := Ema(derivatives, d.SmoothingFactor)
 
 	scores := make([]float64, 0, len(timeSeries.Values))
 	for i := 0; i < len(timeSeries.Values); i++ {
-		scores = append(scores, math.Abs(derivatives[i]-derivatives_ema[i]))
+		scores = append(scores, math.Abs(derivatives[i]-derivativesEma[i]))
 	}
 
 	stdev := Stdev(scores)
