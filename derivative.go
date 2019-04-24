@@ -23,10 +23,9 @@ func (d *Derivative) computeScores(timeSeries *TimeSeries) (*ScoreList, error) {
 	derivatives := d.computeDerivatives(timeSeries)
 	derivativesEma := Ema(derivatives, d.SmoothingFactor)
 
-	scores := make([]float64, 0, len(timeSeries.Values))
-	for i := 0; i < len(timeSeries.Values); i++ {
-		scores = append(scores, math.Abs(derivatives[i]-derivativesEma[i]))
-	}
+	scores := mapSliceWithIndex(timeSeries.Values, func(i int, value float64) float64 {
+		return math.Abs(derivatives[i] - derivativesEma[i])
+	})
 
 	stdev := Stdev(scores)
 	if stdev != 0.0 {
