@@ -5,7 +5,7 @@ import "unicode/utf8"
 // BitmapBinary wrapper type around a string with custom behaviour
 type BitmapBinary string
 
-// Slice slices a string in a pythonic way
+// Slice slices a string in a Python-ish way
 // When lower == upper, it returns an empty string
 // When lower < 0 and upper < len(binary), it return an empty string
 // When lower < 0 and upper >= len(binary), it returns the first character
@@ -34,12 +34,12 @@ func (bb BitmapBinary) At(index int) BitmapBinary {
 	return BitmapBinary(bb.String()[index])
 }
 
-// String returns the underlaying string
+// String returns the underlying string
 func (bb BitmapBinary) String() string {
 	return string(bb)
 }
 
-// Len returns the length of the underlaying string
+// Len returns the length of the underlying string
 func (bb BitmapBinary) Len() int {
 	return utf8.RuneCountInString(bb.String())
 }
