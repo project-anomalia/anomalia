@@ -85,6 +85,17 @@ func mapIntKeys(dict map[int]float64) []int {
 	return keys
 }
 
+func mapFloat64Keys(m map[float64]float64) []float64 {
+	keys := make([]float64, len(m))
+	i := 0
+	for key := range m {
+		keys[i] = key
+		i++
+	}
+	sort.Float64s(keys)
+	return keys
+}
+
 func indexOf(slice []float64, value float64) int {
 	for idx := range slice {
 		if slice[idx] == value {
@@ -92,4 +103,13 @@ func indexOf(slice []float64, value float64) int {
 		}
 	}
 	return -1
+}
+
+func unpackMap(m map[float64]float64) ([]float64, []float64) {
+	keys := mapFloat64Keys(m)
+	values := make([]float64, len(keys))
+	for idx, key := range keys {
+		values[idx] = m[key]
+	}
+	return keys, values
 }
