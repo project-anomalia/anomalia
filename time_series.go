@@ -91,11 +91,74 @@ func (ts *TimeSeries) Stdev() float64 {
 // Median calculates median value over the time series.
 func (ts *TimeSeries) Median() float64 {
 	sorted := sortedCopy(ts.Values)
-	len := len(sorted)
-	mid := len / 2
+	length := len(sorted)
+	mid := length / 2
 
-	if len%2 == 0 {
+	if length%2 == 0 {
 		return (sorted[mid-1] + sorted[mid]) / 2
 	}
 	return sorted[mid]
+}
+
+// Align aligns two time series so that they have the same dimension and same timestamps
+func (ts *TimeSeries) Align(other *TimeSeries) {
+	var (
+		it                = NewIterator(ts.Timestamps)
+		otherIt           = NewIterator(other.Timestamps)
+		zippedSeries      = ts.Zip()
+		zippedOtherSeries = other.Zip()
+		aligned           = make(map[float64]float64)
+		otherAligned      = make(map[float64]float64)
+	)
+
+	timestamp, otherTimestamp := it.Next(), otherIt.Next()
+	for timestamp != nil && otherTimestamp != nil {
+		_timestamp, _otherTimestamp := *timestamp, *otherTimestamp
+		_value, _otherValue := zippedSeries[_timestamp], zippedOtherSeries[_otherTimestamp]
+		if _timestamp == _otherTimestamp {
+			aligned[_timestamp] = _value
+			otherAligned[_otherTimestamp] = _otherValue
+			timestamp = it.Next()
+			otherTimestamp = otherIt.Next()
+		} else if _timestamp < _otherTimestamp {
+			aligned[_timestamp] = _value
+			otherAligned[_timestamp] = _otherValue
+			timestamp = it.Next()
+		} else {
+			aligned[_otherTimestamp] = _value
+			otherAligned[_otherTimestamp] = _otherValue
+			otherTimestamp = otherIt.Next()
+		}
+	}
+
+	//
+	// Align remainder of timestamps
+	//
+	for timestamp != nil {
+		_timestamp := *timestamp
+		aligned[_timestamp] = zippedSeries[_timestamp]
+		otherAligned[_timestamp] = other.Values[len(other.Values)-1]
+		timestamp = it.Next()
+	}
+
+	for otherTimestamp != nil {
+		_otherTimestamp := *otherTimestamp
+		aligned[_otherTimestamp] = ts.Values[len(ts.Values)-1]
+		otherAligned[_otherTimestamp] = zippedOtherSeries[_otherTimestamp]
+		otherTimestamp = otherIt.Next()
+	}
+
+	// Adapt both the original and other time series
+	alignedTimestamps, alignedValues := unpackMap(aligned)
+	ts.Timestamps = alignedTimestamps
+	ts.Values = alignedValues
+
+	otherTimestamps, otherValues := unpackMap(otherAligned)
+	other.Timestamps = otherTimestamps
+	other.Values = otherValues
+}
+
+// Size returns the time series dimension/size.
+func (ts *TimeSeries) Size() int {
+	return len(ts.Timestamps)
 }

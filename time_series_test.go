@@ -106,3 +106,25 @@ func TestMedian(t *testing.T) {
 		t.Fatalf("expected %f, got %f", expected, actual)
 	}
 }
+
+func TestAlign1(t *testing.T) {
+	ts := NewTimeSeries([]float64{4, 5, 6, 7, 8, 15}, []float64{1.2, 0, 1, 0.5, 4, 7})
+	otherTs := NewTimeSeries([]float64{1, 2, 3}, []float64{0.9, 10.1, 5.4})
+
+	ts.Align(otherTs)
+
+	if ts.Size() != otherTs.Size() {
+		t.Fatalf("time series size mismatch")
+	}
+}
+
+func TestAlign2(t *testing.T) {
+	ts := NewTimeSeries([]float64{1, 2, 3, 4}, []float64{0.1, 0.2, 0.3, 9.8})
+	otherTs := NewTimeSeries([]float64{4, 5, 6, 7, 8, 15}, []float64{1.2, 0, 1, 0.5, 4, 7})
+
+	ts.Align(otherTs)
+
+	if ts.Size() != otherTs.Size() {
+		t.Fatalf("time series size mismatch")
+	}
+}
