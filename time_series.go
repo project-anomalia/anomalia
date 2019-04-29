@@ -1,5 +1,7 @@
 package anomalia
 
+import "encoding/json"
+
 // TimeSeries wrapper for timestamps and their values
 type TimeSeries struct {
 	Timestamps []float64
@@ -161,4 +163,13 @@ func (ts *TimeSeries) Align(other *TimeSeries) {
 // Size returns the time series dimension/size.
 func (ts *TimeSeries) Size() int {
 	return len(ts.Timestamps)
+}
+
+// String returns JSON representation of the time series
+func (ts *TimeSeries) String() string {
+	out, err := json.Marshal(ts)
+	if err != nil {
+		panic(err)
+	}
+	return string(out)
 }

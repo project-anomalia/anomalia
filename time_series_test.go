@@ -128,3 +128,11 @@ func TestAlign2(t *testing.T) {
 		t.Fatalf("time series size mismatch")
 	}
 }
+
+func TestString(t *testing.T) {
+	json := (&TimeSeries{[]float64{1, 2, 3}, []float64{1.5, 0, 1}}).String()
+	expected := "{\"Timestamps\":[1,2,3],\"Values\":[1.5,0,1]}"
+	if json != expected {
+		t.Fatalf("incorrect time series string representation")
+	}
+}
