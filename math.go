@@ -110,3 +110,11 @@ func RandomSineValue(rand *rand.Rand, limit int) float64 {
 	x := 2 * math.Pi * float64(frequency*rand.Intn(limit)) / float64(samplingRate)
 	return math.Abs(math.Sin(x) * float64(signalAmplitude))
 }
+
+// AbsInt returns the absolute value of an integer.
+func AbsInt(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}

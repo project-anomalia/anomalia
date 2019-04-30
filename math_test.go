@@ -92,3 +92,9 @@ func TestEma(t *testing.T) {
 		t.Fatalf("input and ema lenghts do not match")
 	}
 }
+
+func TestAbsInt(t *testing.T) {
+	if AbsInt(-5) != 5 {
+		t.Fatalf("wrong absolute value")
+	}
+}
