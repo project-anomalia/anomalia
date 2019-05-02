@@ -2,7 +2,14 @@ package anomalia
 
 import "math"
 
-// CrossCorrelator holds cross correlator parameters and settings.
+// CrossCorrelator holds cross correlator algorithm parameters and settings.
+// It is calculated by multiplying and summing the current and target time series together.
+//
+// This implementation uses normalized time series which makes scoring easy to understand:
+// 	- The higher the coefficient, the higher the correlation is.
+// 	- The maximum value of the correlation coefficient is 1.
+//	- The minimum value of the correlation coefficient is -1.
+//	- Two time series are exactly the same when their correlation coefficient is equal to 1.
 type CrossCorrelator struct {
 	current, target *TimeSeries
 	timePeriod      *TimePeriod
