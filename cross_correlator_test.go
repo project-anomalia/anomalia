@@ -42,3 +42,12 @@ func TestCorrelatorWhenNotEnoughDataPoints(t *testing.T) {
 	}()
 	NewCorrelator(timeSeriesA, timeSeriesB).Run()
 }
+
+func TestCorrelatorWhenTimeSeriesExactlyTheSame(t *testing.T) {
+	timeSeriesA := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
+	timeSeriesB := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
+	result := NewCorrelator(timeSeriesA, timeSeriesB).Run()
+	if result.Coefficient != 1 {
+		t.Fatalf("incorrect coefficient: time series are exactly the same")
+	}
+}
