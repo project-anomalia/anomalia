@@ -43,7 +43,7 @@ func NewCorrelator(current *TimeSeries, target *TimeSeries) *CrossCorrelator {
 
 // WithMaxShift sets the maximal shift in seconds.
 func (cc *CrossCorrelator) WithMaxShift(shift float64) *CrossCorrelator {
-	cc.maxShift = shift
+	cc.maxShift = shift * 1000
 	return cc
 }
 
