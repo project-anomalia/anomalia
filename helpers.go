@@ -113,3 +113,19 @@ func unpackMap(m map[float64]float64) ([]float64, []float64) {
 	}
 	return keys, values
 }
+
+func sumOfSquares(s []float64) float64 {
+	sum := 0.0
+	for _, val := range s {
+		sum += val * val
+	}
+	return sum
+}
+
+func sumOfProducts(s1 []float64, s2 []float64) float64 {
+	sum := 0.0
+	for i := range s1 {
+		sum += s1[i] * s2[i]
+	}
+	return sum
+}
