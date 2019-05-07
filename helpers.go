@@ -1,8 +1,6 @@
 package anomalia
 
-import (
-	"sort"
-)
+import "sort"
 
 type mapper func(float64) float64
 type mapperWithIndex func(int, float64) float64
