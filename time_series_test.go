@@ -1,6 +1,7 @@
 package anomalia
 
 import (
+	"math/big"
 	"reflect"
 	"testing"
 )
@@ -28,20 +29,20 @@ func TestNewTimeSeries(t *testing.T) {
 }
 
 func TestEarliestTimestamp(t *testing.T) {
-	ts := NewTimeSeries(timestamps, values)
-	actual := ts.EarliestTimestamp()
-	expected := 2.0
-	if actual != expected {
-		t.Fatalf("expected '%v', got '%v'", expected, actual)
+	timestamp := NewTimeSeries(timestamps, values).EarliestTimestamp()
+	actual := big.NewFloat(timestamp)
+	expected := big.NewFloat(2.0)
+	if actual.Cmp(expected) != 0 {
+		t.Fatalf("expected '%f', got '%f'", expected, actual)
 	}
 }
 
 func TestLastestTimestamp(t *testing.T) {
-	ts := NewTimeSeries(timestamps, values)
-	actual := ts.LastestTimestamp()
-	expected := 15.0
-	if actual != expected {
-		t.Fatalf("expected '%v', got '%v'", expected, actual)
+	timestamp := NewTimeSeries(timestamps, values).LastestTimestamp()
+	actual := big.NewFloat(timestamp)
+	expected := big.NewFloat(15.0)
+	if actual.Cmp(expected) != 0 {
+		t.Fatalf("expected '%f', got '%f'", expected, actual)
 	}
 }
 
@@ -92,17 +93,16 @@ func TestTimeSeriesAverage(t *testing.T) {
 
 func TestMedian(t *testing.T) {
 	ts := NewTimeSeries(timestamps, values)
-
-	actual := Float64WithPrecision(ts.Median(), 2)
-	expected := Float64WithPrecision(1.00, 2)
-	if expected != actual {
+	actual := big.NewFloat(ts.Median())
+	expected := big.NewFloat(1.0)
+	if actual.Cmp(expected) != 0 {
 		t.Fatalf("expected %f, got %f", expected, actual)
 	}
 
 	ts = ts.Crop(0, 8)
-	actual = Float64WithPrecision(ts.Median(), 2)
-	expected = Float64WithPrecision(1.45, 2)
-	if expected != actual {
+	actual = big.NewFloat(ts.Median())
+	expected = big.NewFloat(1.45)
+	if actual.Cmp(expected) != 0 {
 		t.Fatalf("expected %f, got %f", expected, actual)
 	}
 }
