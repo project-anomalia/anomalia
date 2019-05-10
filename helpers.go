@@ -1,6 +1,9 @@
 package anomalia
 
-import "sort"
+import (
+	"sort"
+	"sync"
+)
 
 type mapper func(float64) float64
 type mapperWithIndex func(int, float64) float64
@@ -22,19 +25,39 @@ func minMax(data []float64) (float64, float64) {
 	return min, max
 }
 
-func mapSlice(slice []float64, mapper mapper) []float64 {
-	result := make([]float64, 0, len(slice))
-	for _, value := range slice {
-		result = append(result, mapper(value))
+func mapSlice(slice []float64, m mapper) []float64 {
+	var (
+		wg     sync.WaitGroup
+		result = make([]float64, len(slice))
+	)
+
+	wg.Add(len(slice))
+	for i, value := range slice {
+		go func(i int, value float64) {
+			defer wg.Done()
+			result[i] = m(value)
+		}(i, value)
 	}
+	wg.Wait()
+
 	return result
 }
 
-func mapSliceWithIndex(slice []float64, mapper mapperWithIndex) []float64 {
-	result := make([]float64, 0, len(slice))
+func mapSliceWithIndex(slice []float64, m mapperWithIndex) []float64 {
+	var (
+		wg     sync.WaitGroup
+		result = make([]float64, len(slice))
+	)
+
+	wg.Add(len(slice))
 	for idx, value := range slice {
-		result = append(result, mapper(idx, value))
+		go func(idx int, value float64) {
+			defer wg.Done()
+			result[idx] = m(idx, value)
+		}(idx, value)
 	}
+	wg.Wait()
+
 	return result
 }
 
