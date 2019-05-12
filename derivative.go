@@ -41,21 +41,22 @@ func (d *Derivative) computeDerivatives(timeSeries *TimeSeries) []float64 {
 	zippedSeries := timeSeries.Zip()
 	derivatives := make([]float64, 0, len(zippedSeries))
 
-	for i := 1; i <= len(zippedSeries); i++ {
-		preTimestamp := timeSeries.Timestamps[i-1]
-		preValue := zippedSeries[preTimestamp]
+	for i, timestamp := range timeSeries.Timestamps {
+		if i > 0 {
+			preTimestamp := timeSeries.Timestamps[i-1]
+			preValue := zippedSeries[preTimestamp]
 
-		currentTimestamp := timeSeries.Timestamps[i]
-		currentValue := zippedSeries[currentTimestamp]
-		delta := currentTimestamp - preTimestamp
+			currentValue := zippedSeries[timestamp]
+			delta := timestamp - preTimestamp
 
-		derivative := 0.0
-		if delta != 0 {
-			derivative = (currentValue - preValue) / delta
-		} else {
-			derivative = currentValue - preValue
+			derivative := 0.0
+			if delta != 0 {
+				derivative = (currentValue - preValue) / delta
+			} else {
+				derivative = currentValue - preValue
+			}
+			derivatives = append(derivatives, math.Abs(derivative))
 		}
-		derivatives = append(derivatives, math.Abs(derivative))
 	}
 
 	if len(derivatives) != 0 {
