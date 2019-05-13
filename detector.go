@@ -19,7 +19,7 @@ func (d *Detector) GetScores(timeSeries *TimeSeries) *ScoreList {
 	if scoreList := NewBitmap().Run(timeSeries); scoreList != nil {
 		return scoreList
 	}
-	return NewNormalDistribution().Run(timeSeries)
+	return NewWeightedSum().Run(timeSeries)
 }
 
 // GetAnomalies detects anomalies using the specified threshold on scores
