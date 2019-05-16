@@ -5,12 +5,18 @@ import "math"
 // Derivative holds the derivative algorithm configuration.
 // It uses the derivative of the current value as anomaly score.
 type Derivative struct {
-	SmoothingFactor float64
+	smoothingFactor float64
 }
 
 // NewDerivative return Derivative instance
-func NewDerivative(smoothingFactor float64) *Derivative {
-	return &Derivative{smoothingFactor}
+func NewDerivative() *Derivative {
+	return &Derivative{0.2}
+}
+
+// WithSmoothingFactor sets the smoothing factor.
+func (d *Derivative) WithSmoothingFactor(factor float64) *Derivative {
+	d.smoothingFactor = factor
+	return d
 }
 
 // Run runs the derivative algorithm over the time series
@@ -21,7 +27,7 @@ func (d *Derivative) Run(timeSeries *TimeSeries) *ScoreList {
 
 func (d *Derivative) computeScores(timeSeries *TimeSeries) (*ScoreList, error) {
 	derivatives := d.computeDerivatives(timeSeries)
-	derivativesEma := Ema(derivatives, d.SmoothingFactor)
+	derivativesEma := Ema(derivatives, d.smoothingFactor)
 
 	scores := mapSliceWithIndex(timeSeries.Values, func(i int, value float64) float64 {
 		return math.Abs(derivatives[i] - derivativesEma[i])
