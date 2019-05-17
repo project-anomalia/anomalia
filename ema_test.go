@@ -8,7 +8,11 @@ func TestRunWithEma(t *testing.T) {
 		Values:     []float64{56, 59, 52, 49, 49, 1.5, 48, 50, 53, 44},
 	}
 
-	scoreList := NewEma().Run(timeSeries)
+	scoreList := NewEma().
+		WithLagWindowSize(3).
+		WithSmoothingFactor(0.1).
+		Run(timeSeries)
+
 	if scoreList == nil {
 		t.Fatalf("score list cannot be nil")
 	}
