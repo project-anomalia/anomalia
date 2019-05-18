@@ -8,7 +8,10 @@ func TestRunWithWeightedSum(t *testing.T) {
 		Values:     []float64{56, 59, 52, 49, 49, 1.5, 48, 50, 53, 44},
 	}
 
-	scoreList := NewWeightedSum().Run(timeSeries)
+	scoreList := NewWeightedSum().
+		WithScoreWeight(0.5).
+		WithMinEmaScore(1.0).
+		Run(timeSeries)
 	if len(scoreList.Timestamps) != len(timeSeries.Timestamps) {
 		t.Fatalf("score list and time series dimensions do not match")
 	}
