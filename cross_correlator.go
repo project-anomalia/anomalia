@@ -31,8 +31,8 @@ type CorrelationResult struct {
 	ShiftedCoefficient float64
 }
 
-// NewCorrelator returns an instance of the cross correlator.
-func NewCorrelator(current *TimeSeries, target *TimeSeries) *CrossCorrelator {
+// NewCrossCorrelator returns an instance of the cross correlator.
+func NewCrossCorrelator(current *TimeSeries, target *TimeSeries) *CrossCorrelator {
 	return &CrossCorrelator{
 		current:  current,
 		target:   target,
