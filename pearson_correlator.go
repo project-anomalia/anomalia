@@ -9,6 +9,7 @@ type PearsonCorrelator struct {
 
 // NewPearsonCorrelator returns an instance of the pearson correlator.
 // It measures the linear correlation between the current and target time series.
+// It should be used when the two time series are normally distributed.
 //
 // The correlation coefficient always has a value between -1 and +1 where:
 //  - +1 is total positive linear correlation
