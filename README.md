@@ -34,12 +34,33 @@ func main() {
     timeSeries := loadTimeSeriesFromAnExternalSource()
 
     // Instantiate the default detector which uses a threshold to determines anomalies.
-    // Anomalies are data points that have a score above the threshold (2 in this case).
-    anomalies := anomalia.NewDetector(2).GetAnomalies(timeSeries)
+    // Anomalies are data points that have a score above the threshold (2.0 in this case).
+    anomalies := anomalia.NewDetector(2.0).GetAnomalies(timeSeries)
 
     // Iterate over detected anomalies and print their exact timestamp and value.
     for _, anomaly := range anomalies {
         fmt.Println(anomaly.Timestamp, ",", anomaly.Value)
+    }
+}
+```
+
+And another example to check if two time series have a relationship or correlated:
+
+```go
+import "github.com/amrfaissal/anomalia"
+
+func main() {
+    timeSeriesA := loadTimeSeriesA()
+    timeSeriesB := loadTimeSeriesB()
+
+    // If the time series data points do not follow a certain distribution
+    // we use the Spearman correlator.
+    coefficient := anomalia.NewSpearmanCorrelator(timeSeriesA, timeSeriesB).Run()
+
+    // If the coefficient is above a certain threshold (0.7 for example), we consider
+    // the time series correlated.
+    if coefficient < 0.7 {
+        panic("no relationship between the two time series")
     }
 }
 ```
