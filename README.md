@@ -65,6 +65,12 @@ func main() {
 }
 ```
 
+## TODO / Suggestions
+
+- Build CLI tool for rapid experimentation
+- Add more algorithms such as STL with LOESS
+- Add benchmarks
+
 ## License
 
 ```text
