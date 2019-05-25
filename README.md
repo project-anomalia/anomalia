@@ -71,6 +71,10 @@ func main() {
 - Add more algorithms such as STL with LOESS
 - Add benchmarks
 
+## Resources
+
+TODO
+
 ## License
 
 ```text
