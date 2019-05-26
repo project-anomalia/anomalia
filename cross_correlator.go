@@ -62,7 +62,7 @@ func (cc *CrossCorrelator) UseAnomalyScore(use bool) *CrossCorrelator {
 // Run run the cross correlation algorithm.
 func (cc *CrossCorrelator) Run() CorrelationResult {
 	if cc.useAnomalyScore {
-		detector := NewDetector(0.0)
+		detector := NewDetector()
 		cc.current = getAnomalyScores(detector, cc.current)
 		cc.target = getAnomalyScores(detector, cc.target)
 	}

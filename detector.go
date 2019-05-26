@@ -2,14 +2,20 @@ package anomalia
 
 // Detector is the default anomaly detector
 type Detector struct {
-	Threshold float64
+	threshold float64
 }
 
 type tuple struct{ start, end float64 }
 
-// NewDetector return an instance of the default detector
-func NewDetector(threshold float64) *Detector {
-	return &Detector{threshold}
+// NewDetector return an instance of the default detector.
+func NewDetector() *Detector {
+	return &Detector{2.0}
+}
+
+// WithThreshold sets the threshold used by the detector.
+func (d *Detector) WithThreshold(threshold float64) *Detector {
+	d.threshold = threshold
+	return d
 }
 
 // GetScores runs the detector on the supplied time series
@@ -35,7 +41,7 @@ func (d *Detector) GetAnomalies(timeSeries *TimeSeries) []Anomaly {
 	// Find all anomalies intervals
 	var start, end float64
 	for _, timestamp := range scoreList.Timestamps {
-		if scores[timestamp] > d.Threshold {
+		if scores[timestamp] > d.threshold {
 			end = timestamp
 			if start == 0 {
 				start = timestamp
@@ -63,7 +69,7 @@ func (d *Detector) GetAnomalies(timeSeries *TimeSeries) []Anomaly {
 				StartTimestamp: interval.start,
 				EndTimestamp:   interval.end,
 				Score:          maxRefinedScore,
-				threshold:      d.Threshold,
+				threshold:      d.threshold,
 			}
 			anomalies = append(anomalies, anomaly)
 		}

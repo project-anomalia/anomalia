@@ -34,8 +34,8 @@ func main() {
     timeSeries := loadTimeSeriesFromAnExternalSource()
 
     // Instantiate the default detector which uses a threshold to determines anomalies.
-    // Anomalies are data points that have a score above the threshold (2.0 in this case).
-    anomalies := anomalia.NewDetector(2.0).GetAnomalies(timeSeries)
+    // Anomalies are data points that have a score above the threshold (2.5 in this case).
+    anomalies := anomalia.NewDetector().WithThreshold(2.5).GetAnomalies(timeSeries)
 
     // Iterate over detected anomalies and print their exact timestamp and value.
     for _, anomaly := range anomalies {
