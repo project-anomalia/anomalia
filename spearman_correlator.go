@@ -2,7 +2,14 @@ package anomalia
 
 import "sort"
 
-// SpearmanCorrelator struct which holds the current and target time series.
+// SpearmanCorrelator holds the Spearman correlator algorithm configuration.
+// It is the non-parametric version of the Pearson correlation and it should be used
+// when the time series distribution is unknown or not normally distributed.
+//
+// Spearman’s correlator returns a value from -1 to 1, where:
+//	- +1  = a perfect positive correlation between ranks
+//	- -1  = a perfect negative correlation between ranks
+//	- 0   = no correlation between ranks.
 type SpearmanCorrelator struct {
 	current, target *TimeSeries
 }
@@ -45,7 +52,7 @@ func (sc *SpearmanCorrelator) Run() float64 {
 			sum += val
 		}
 
-		avg := float64((sum + len(duplicateValues))) / float64(len(duplicateValues))
+		avg := float64(sum+len(duplicateValues)) / float64(len(duplicateValues))
 		ranks[pos].xRank = avg
 		for index := 1; index < len(duplicateValues); index++ {
 			ranks[duplicateValues[index]].xRank = avg
@@ -73,7 +80,7 @@ func (sc *SpearmanCorrelator) Run() float64 {
 			sum += val
 		}
 
-		avg := float64((sum + len(duplicateValues))) / float64(len(duplicateValues))
+		avg := float64(sum+len(duplicateValues)) / float64(len(duplicateValues))
 		ranks[pos].yRank = avg
 		for index := 1; index < len(duplicateValues); index++ {
 			ranks[duplicateValues[index]].yRank = avg
