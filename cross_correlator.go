@@ -12,16 +12,8 @@ import "math"
 //	- Two time series are exactly the same when their correlation coefficient is equal to 1.
 type CrossCorrelator struct {
 	current, target *TimeSeries
-	timePeriod      *TimePeriod
 	maxShift        float64
 	impact          float64
-	useAnomalyScore bool
-}
-
-// TimePeriod represents a time period marked by start and end timestamps.
-type TimePeriod struct {
-	Start float64
-	End   float64
 }
 
 // CorrelationResult holds detected correlation result.
@@ -53,28 +45,15 @@ func (cc *CrossCorrelator) WithImpact(impact float64) *CrossCorrelator {
 	return cc
 }
 
-// UseAnomalyScore tells the correlator to calculate anomaly scores from both time series.
-func (cc *CrossCorrelator) UseAnomalyScore(use bool) *CrossCorrelator {
-	cc.useAnomalyScore = use
-	return cc
+// GetCorrelationResult runs the cross correlation algorithm.
+func (cc *CrossCorrelator) GetCorrelationResult() CorrelationResult {
+	cc.sanityCheck()
+	return cc.detectCorrelation()
 }
 
-// Run run the cross correlation algorithm.
-func (cc *CrossCorrelator) Run() CorrelationResult {
-	if cc.useAnomalyScore {
-		detector := NewDetector()
-		cc.current = getAnomalyScores(detector, cc.current)
-		cc.target = getAnomalyScores(detector, cc.target)
-	}
-
-	if cc.timePeriod != nil {
-		cc.current = cc.current.Crop(cc.timePeriod.Start, cc.timePeriod.End)
-		cc.target = cc.target.Crop(cc.timePeriod.Start, cc.timePeriod.End)
-	}
-
-	cc.sanityCheck()
-
-	return cc.detectCorrelation()
+// Run runs the cross correlation algorithm and returns only the coefficient.
+func (cc *CrossCorrelator) Run() float64 {
+	return cc.GetCorrelationResult().Coefficient
 }
 
 func (cc *CrossCorrelator) detectCorrelation() CorrelationResult {
@@ -163,14 +142,6 @@ func findMaxCorrelation(data [][]float64) []float64 {
 		}
 	}
 	return max
-}
-
-func getAnomalyScores(detector *Detector, timeSeries *TimeSeries) *TimeSeries {
-	scoreList := detector.GetScores(timeSeries)
-	if scoreList == nil {
-		panic("failed to calculate anomaly scores")
-	}
-	return &TimeSeries{scoreList.Timestamps, scoreList.Scores}
 }
 
 func (cc *CrossCorrelator) sanityCheck() {
