@@ -27,3 +27,15 @@ func TestRunCorrelatorWithSpearmanRank(t *testing.T) {
 		t.Fatalf("incorrect coefficient: time series are exactly the same")
 	}
 }
+
+func TestRunCorrelatorWithPearson(t *testing.T) {
+	timeSeriesA := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
+	timeSeriesB := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
+
+	coefficient := NewCorrelator().WithTimeSeries(timeSeriesA, timeSeriesB).
+		WithMethod(Pearson, nil).
+		Run()
+	if coefficient != 1.0 {
+		t.Fatalf("incorrect coefficient: time series are exactly the same")
+	}
+}

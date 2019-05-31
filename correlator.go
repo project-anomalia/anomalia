@@ -13,6 +13,8 @@ const (
 	XCorr CorrelationMethod = iota
 	// SpearmanRank represents the Spearman Rank Correlation algorithm.
 	SpearmanRank
+	// Pearson represents the Pearson Correlation algorithm.
+	Pearson
 )
 
 // TimePeriod represents a time period marked by start and end timestamps.
@@ -84,6 +86,8 @@ func (c *Correlator) getCorrelationAlgorithmByMethod(method CorrelationMethod, o
 		}
 	case SpearmanRank:
 		algorithm = NewSpearmanCorrelator(c.current, c.target)
+	case Pearson:
+		algorithm = NewPearsonCorrelator(c.current, c.target)
 	default:
 		panic("unsupported correlation method/algorithm")
 	}
