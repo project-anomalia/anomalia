@@ -2,10 +2,10 @@ package anomalia
 
 import "testing"
 
-func TestNewCorrelator(t *testing.T) {
+func TestNewCrossCorrelation(t *testing.T) {
 	timeSeriesA := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
 	timeSeriesB := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{2, 3, -2, 3, 2, 4, 1, -1})
-	correlator := NewCrossCorrelator(timeSeriesA, timeSeriesB).
+	correlator := NewCrossCorrelation(timeSeriesA, timeSeriesB).
 		WithMaxShift(30).
 		WithImpact(0.01)
 	if correlator == nil {
@@ -13,12 +13,12 @@ func TestNewCorrelator(t *testing.T) {
 	}
 }
 
-func TestRunCrossCorrelator(t *testing.T) {
+func TestRunCrossCorrelation(t *testing.T) {
 	timeSeriesA := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7, 8}, []float64{0, 0, 0, 0, 0.5, 1, 1, 1, 0})
 	timeSeriesB := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7, 8}, []float64{0, 0.5, 1, 1, 1, 0, 0, 0, 0})
 	timeSeriesC := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5}, []float64{0, 0.5, 1, 1, 1, 0})
-	result1 := NewCrossCorrelator(timeSeriesA, timeSeriesB).GetCorrelationResult()
-	result2 := NewCrossCorrelator(timeSeriesA, timeSeriesC).GetCorrelationResult()
+	result1 := NewCrossCorrelation(timeSeriesA, timeSeriesB).GetCorrelationResult()
+	result2 := NewCrossCorrelation(timeSeriesA, timeSeriesC).GetCorrelationResult()
 
 	if result1.Coefficient != result2.Coefficient {
 		t.Fatalf("correlation coefficient did not match")
@@ -29,7 +29,7 @@ func TestRunCrossCorrelator(t *testing.T) {
 	}
 }
 
-func TestCorrelatorWhenNotEnoughDataPoints(t *testing.T) {
+func TestCorrelationWhenNotEnoughDataPoints(t *testing.T) {
 	timeSeriesA := NewTimeSeries([]float64{0, 1}, []float64{0.5, 0})
 	timeSeriesB := NewTimeSeries([]float64{0}, []float64{0.5})
 
@@ -39,13 +39,13 @@ func TestCorrelatorWhenNotEnoughDataPoints(t *testing.T) {
 			t.Errorf("correlator did not panic")
 		}
 	}()
-	NewCrossCorrelator(timeSeriesA, timeSeriesB).Run()
+	NewCrossCorrelation(timeSeriesA, timeSeriesB).Run()
 }
 
-func TestCorrelatorWhenTimeSeriesExactlyTheSame(t *testing.T) {
+func TestCorrelationWhenTimeSeriesExactlyTheSame(t *testing.T) {
 	timeSeriesA := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
 	timeSeriesB := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
-	result := NewCrossCorrelator(timeSeriesA, timeSeriesB).Run()
+	result := NewCrossCorrelation(timeSeriesA, timeSeriesB).Run()
 	if result != 1 {
 		t.Fatalf("incorrect coefficient: time series are exactly the same")
 	}

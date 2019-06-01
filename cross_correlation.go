@@ -2,7 +2,7 @@ package anomalia
 
 import "math"
 
-// CrossCorrelator holds cross correlator algorithm parameters and settings.
+// CrossCorrelation holds Cross Correlation algorithm parameters and settings.
 // It is calculated by multiplying and summing the current and target time series together.
 //
 // This implementation uses normalized time series which makes scoring easy to understand:
@@ -10,7 +10,7 @@ import "math"
 // 	- The maximum value of the correlation coefficient is 1.
 //	- The minimum value of the correlation coefficient is -1.
 //	- Two time series are exactly the same when their correlation coefficient is equal to 1.
-type CrossCorrelator struct {
+type CrossCorrelation struct {
 	current, target *TimeSeries
 	maxShift        float64
 	impact          float64
@@ -23,9 +23,9 @@ type CorrelationResult struct {
 	ShiftedCoefficient float64
 }
 
-// NewCrossCorrelator returns an instance of the cross correlator.
-func NewCrossCorrelator(current *TimeSeries, target *TimeSeries) *CrossCorrelator {
-	return &CrossCorrelator{
+// NewCrossCorrelation returns an instance of the cross correlation struct.
+func NewCrossCorrelation(current *TimeSeries, target *TimeSeries) *CrossCorrelation {
+	return &CrossCorrelation{
 		current:  current,
 		target:   target,
 		maxShift: 60 * 1000,
@@ -34,29 +34,29 @@ func NewCrossCorrelator(current *TimeSeries, target *TimeSeries) *CrossCorrelato
 }
 
 // WithMaxShift sets the maximal shift in seconds.
-func (cc *CrossCorrelator) WithMaxShift(shift float64) *CrossCorrelator {
+func (cc *CrossCorrelation) WithMaxShift(shift float64) *CrossCorrelation {
 	cc.maxShift = shift * 1000
 	return cc
 }
 
 // WithImpact sets impact of shift on shifted correlation coefficient.
-func (cc *CrossCorrelator) WithImpact(impact float64) *CrossCorrelator {
+func (cc *CrossCorrelation) WithImpact(impact float64) *CrossCorrelation {
 	cc.impact = impact
 	return cc
 }
 
 // GetCorrelationResult runs the cross correlation algorithm.
-func (cc *CrossCorrelator) GetCorrelationResult() CorrelationResult {
+func (cc *CrossCorrelation) GetCorrelationResult() CorrelationResult {
 	cc.sanityCheck()
 	return cc.detectCorrelation()
 }
 
 // Run runs the cross correlation algorithm and returns only the coefficient.
-func (cc *CrossCorrelator) Run() float64 {
+func (cc *CrossCorrelation) Run() float64 {
 	return cc.GetCorrelationResult().Coefficient
 }
 
-func (cc *CrossCorrelator) detectCorrelation() CorrelationResult {
+func (cc *CrossCorrelation) detectCorrelation() CorrelationResult {
 	cc.current, cc.target = cc.current.Normalize(), cc.target.Normalize()
 	cc.current.Align(cc.target)
 
@@ -144,7 +144,7 @@ func findMaxCorrelation(data [][]float64) []float64 {
 	return max
 }
 
-func (cc *CrossCorrelator) sanityCheck() {
+func (cc *CrossCorrelation) sanityCheck() {
 	if cc.current.Size() < 2 || cc.target.Size() < 2 {
 		panic("not enough data points")
 	}

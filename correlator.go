@@ -78,16 +78,16 @@ func (c *Correlator) getCorrelationAlgorithmByMethod(method CorrelationMethod, o
 	var algorithm CorrelationAlgorithm
 	switch method {
 	case XCorr:
-		algorithm = NewCrossCorrelator(c.current, c.target)
+		algorithm = NewCrossCorrelation(c.current, c.target)
 		if options != nil && len(options) > 0 {
-			algorithm = algorithm.(*CrossCorrelator).
+			algorithm = algorithm.(*CrossCorrelation).
 				WithMaxShift(options[0]).
 				WithImpact(options[1])
 		}
 	case SpearmanRank:
-		algorithm = NewSpearmanCorrelator(c.current, c.target)
+		algorithm = NewSpearmanCorrelation(c.current, c.target)
 	case Pearson:
-		algorithm = NewPearsonCorrelator(c.current, c.target)
+		algorithm = NewPearsonCorrelation(c.current, c.target)
 	default:
 		panic("unsupported correlation method/algorithm")
 	}

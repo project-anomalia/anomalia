@@ -2,7 +2,7 @@ package anomalia
 
 import "sort"
 
-// SpearmanCorrelator holds the Spearman correlator algorithm configuration.
+// SpearmanCorrelation holds the Spearman Correlation algorithm configuration.
 // It is the non-parametric version of the Pearson correlation and it should be used
 // when the time series distribution is unknown or not normally distributed.
 //
@@ -10,20 +10,19 @@ import "sort"
 //	- +1  = a perfect positive correlation between ranks
 //	- -1  = a perfect negative correlation between ranks
 //	- 0   = no correlation between ranks.
-type SpearmanCorrelator struct {
+type SpearmanCorrelation struct {
 	current, target *TimeSeries
 }
 
 type rank struct{ x, y, xRank, yRank float64 }
 
-// NewSpearmanCorrelator returns an instance of the spearman correlator.
-func NewSpearmanCorrelator(current, target *TimeSeries) *SpearmanCorrelator {
-	return &SpearmanCorrelator{current, target}
+// NewSpearmanCorrelation returns an instance of the spearman correlation struct.
+func NewSpearmanCorrelation(current, target *TimeSeries) *SpearmanCorrelation {
+	return &SpearmanCorrelation{current, target}
 }
 
-// Run runs the spearman correlator on the current and target time series.
-// It returns the rank correlation coefficient which always has a value between -1 and 1.
-func (sc *SpearmanCorrelator) Run() float64 {
+// Run runs the spearman correlation on the current and target time series.
+func (sc *SpearmanCorrelation) Run() float64 {
 	sc.sanityCheck()
 
 	// Build up the ranks slice
@@ -94,10 +93,10 @@ func (sc *SpearmanCorrelator) Run() float64 {
 		sc.target.Values[index] = rank.yRank
 	}
 
-	return NewPearsonCorrelator(sc.current, sc.target).Run()
+	return NewPearsonCorrelation(sc.current, sc.target).Run()
 }
 
-func (sc *SpearmanCorrelator) sanityCheck() {
+func (sc *SpearmanCorrelation) sanityCheck() {
 	if sc.current.Size() < 3 || sc.current.Size() != sc.target.Size() {
 		panic("current and/or target series have an invalid dimension")
 	}
