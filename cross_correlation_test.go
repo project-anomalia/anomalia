@@ -29,19 +29,6 @@ func TestRunCrossCorrelation(t *testing.T) {
 	}
 }
 
-func TestCorrelationWhenNotEnoughDataPoints(t *testing.T) {
-	timeSeriesA := NewTimeSeries([]float64{0, 1}, []float64{0.5, 0})
-	timeSeriesB := NewTimeSeries([]float64{0}, []float64{0.5})
-
-	// Assert panic
-	defer func() {
-		if r := recover(); r == nil {
-			t.Errorf("correlator did not panic")
-		}
-	}()
-	NewCrossCorrelation(timeSeriesA, timeSeriesB).Run()
-}
-
 func TestCorrelationWhenTimeSeriesExactlyTheSame(t *testing.T) {
 	timeSeriesA := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
 	timeSeriesB := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})

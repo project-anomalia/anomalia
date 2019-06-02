@@ -24,17 +24,3 @@ func TestRunPearsonCorrelationWhenTimeSeriesHaveNoLinearRelation(t *testing.T) {
 		t.Fatalf("must return number close to 0")
 	}
 }
-
-func TestRunPearsonCorrelationWhenTimeSeriesHaveDifferentSizes(t *testing.T) {
-	timeSeriesA := NewTimeSeries([]float64{0, 1, 2, 3, 4}, []float64{0, 3.2, 5.5, 7.1, 8.9})
-	timeSeriesB := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5}, []float64{-0.5, 1, 2.5, 4.1, 4.6, -1})
-
-	// Assert panic
-	defer func() {
-		if r := recover(); r == nil {
-			t.Errorf("correlator did not panic")
-		}
-	}()
-
-	NewPearsonCorrelation(timeSeriesA, timeSeriesB).Run()
-}

@@ -1,6 +1,9 @@
 package anomalia
 
-import "sort"
+import (
+	"errors"
+	"sort"
+)
 
 // SpearmanCorrelation holds the Spearman Correlation algorithm configuration.
 // It is the non-parametric version of the Pearson correlation and it should be used
@@ -23,8 +26,6 @@ func NewSpearmanCorrelation(current, target *TimeSeries) *SpearmanCorrelation {
 
 // Run runs the spearman correlation on the current and target time series.
 func (sc *SpearmanCorrelation) Run() float64 {
-	sc.sanityCheck()
-
 	// Build up the ranks slice
 	ranks := make([]rank, sc.current.Size())
 	for index, currentValue := range sc.current.Values {
@@ -96,8 +97,9 @@ func (sc *SpearmanCorrelation) Run() float64 {
 	return NewPearsonCorrelation(sc.current, sc.target).Run()
 }
 
-func (sc *SpearmanCorrelation) sanityCheck() {
+func (sc *SpearmanCorrelation) sanityCheck() error {
 	if sc.current.Size() < 3 || sc.current.Size() != sc.target.Size() {
-		panic("current and/or target series have an invalid dimension")
+		return errors.New("current and/or target series have an invalid dimension")
 	}
+	return nil
 }

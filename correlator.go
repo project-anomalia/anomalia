@@ -3,6 +3,7 @@ package anomalia
 // CorrelationAlgorithm base interface for correlation algorithms.
 type CorrelationAlgorithm interface {
 	Run() float64
+	sanityCheck() error
 }
 
 // CorrelationMethod type checker for correlation method
@@ -66,11 +67,16 @@ func (c *Correlator) UseAnomalyScore(use bool) *Correlator {
 
 // Run runs the correlator.
 func (c *Correlator) Run() float64 {
+	if err := c.algorithm.sanityCheck(); err != nil {
+		panic(err)
+	}
+
 	if c.useAnomalyScore {
 		detector := NewDetector()
 		c.current = getAnomalyScores(detector, c.current)
 		c.target = getAnomalyScores(detector, c.target)
 	}
+
 	return c.algorithm.Run()
 }
 

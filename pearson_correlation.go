@@ -1,6 +1,9 @@
 package anomalia
 
-import "math"
+import (
+	"errors"
+	"math"
+)
 
 // PearsonCorrelation struct which holds the current and target time series.
 type PearsonCorrelation struct {
@@ -24,8 +27,6 @@ func NewPearsonCorrelation(current, target *TimeSeries) *PearsonCorrelation {
 // Run runs the pearson correlation on the current and target time series.
 // It returns the correlation coefficient which always has a value between -1 and +1.
 func (pc *PearsonCorrelation) Run() float64 {
-	pc.sanityCheck()
-
 	currentSquares, targetSquares := sumOfSquares(pc.current.Values), sumOfSquares(pc.target.Values)
 	currentAvg, targetAvg := Average(pc.current.Values), Average(pc.target.Values)
 	n := float64(pc.current.Size())
@@ -37,8 +38,9 @@ func (pc *PearsonCorrelation) Run() float64 {
 	return (sumOfProducts(pc.current.Values, pc.target.Values) - n*currentAvg*targetAvg) / denom
 }
 
-func (pc *PearsonCorrelation) sanityCheck() {
+func (pc *PearsonCorrelation) sanityCheck() error {
 	if pc.current.Size() != pc.target.Size() {
-		panic("current and target series do not have the same dimension")
+		return errors.New("current and target series do not have the same dimension")
 	}
+	return nil
 }

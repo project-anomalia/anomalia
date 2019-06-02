@@ -1,6 +1,9 @@
 package anomalia
 
-import "math"
+import (
+	"errors"
+	"math"
+)
 
 // CrossCorrelation holds Cross Correlation algorithm parameters and settings.
 // It is calculated by multiplying and summing the current and target time series together.
@@ -47,7 +50,6 @@ func (cc *CrossCorrelation) WithImpact(impact float64) *CrossCorrelation {
 
 // GetCorrelationResult runs the cross correlation algorithm.
 func (cc *CrossCorrelation) GetCorrelationResult() CorrelationResult {
-	cc.sanityCheck()
 	return cc.detectCorrelation()
 }
 
@@ -144,8 +146,9 @@ func findMaxCorrelation(data [][]float64) []float64 {
 	return max
 }
 
-func (cc *CrossCorrelation) sanityCheck() {
+func (cc *CrossCorrelation) sanityCheck() error {
 	if cc.current.Size() < 2 || cc.target.Size() < 2 {
-		panic("not enough data points")
+		return errors.New("not enough data points")
 	}
+	return nil
 }
