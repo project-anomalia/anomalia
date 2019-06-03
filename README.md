@@ -4,6 +4,8 @@
 
 It supports anomaly detection and correlation. The API is simple and configurable in the sense that you can choose which algorithm suits your needs for anomaly detection and correlation.
 
+:construction: **The library is currently under development so things might move or change!**
+
 ## Installation
 
 Installation is done using `go get`:
@@ -23,6 +25,8 @@ go get -u github.com/amrfaissal/anomalia
 This is a simple example to get you up & running with the library:
 
 ```go
+package main
+
 import (
     "fmt"
     "github.com/amrfaissal/anomalia"
@@ -47,15 +51,19 @@ func main() {
 And another example to check if two time series have a relationship or correlated:
 
 ```go
+package main
+
 import "github.com/amrfaissal/anomalia"
 
 func main() {
-    timeSeriesA := loadTimeSeriesA()
-    timeSeriesB := loadTimeSeriesB()
+    a := loadTimeSeriesA()
+    b := loadTimeSeriesB()
 
     // If the time series data points do not follow a certain distribution
     // we use the Spearman correlator.
-    coefficient := anomalia.NewSpearmanCorrelator(timeSeriesA, timeSeriesB).Run()
+    coefficient := anomalia.NewCorrelator().WithTimeSeries(a, b).
+    	WithMethod(anomalia.SpearmanRank, nil).
+    	Run()
 
     // If the coefficient is above a certain threshold (0.7 for example), we consider
     // the time series correlated.
@@ -65,11 +73,15 @@ func main() {
 }
 ```
 
+If the correlation algorithm accepts any additional parameters (see different implementations), you can pass them as a
+ `float64` slice to the `WithMethod(method, options)` method.
+
 ## TODO / Suggestions
 
-- Build CLI tool for rapid experimentation
-- Add more algorithms such as STL with LOESS
-- Add benchmarks
+- CLI tool for rapid experimentation
+- More algorithms such as STL with LOESS
+- Benchmarks
+- Move to a separate organization
 
 ## Resources
 
