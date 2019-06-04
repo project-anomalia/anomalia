@@ -19,7 +19,7 @@ func (d *Detector) WithThreshold(threshold float64) *Detector {
 }
 
 // GetScores runs the detector on the supplied time series
-// It uses the bitmap alogrithm to calculate the score list and falls back
+// It uses the Bitmap algorithm to calculate the score list and falls back
 // to the normal distribution algorithm in case of not enough data points in the time series.
 func (d *Detector) GetScores(timeSeries *TimeSeries) *ScoreList {
 	if scoreList := NewBitmap().Run(timeSeries); scoreList != nil {

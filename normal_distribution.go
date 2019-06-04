@@ -10,7 +10,7 @@ func NewNormalDistribution() *NormalDistribution {
 	return &NormalDistribution{0.0025}
 }
 
-// Run runs the normal distribution alogrithm over the time series
+// Run runs the normal distribution algorithm over the time series
 func (nd *NormalDistribution) Run(timeSeries *TimeSeries) *ScoreList {
 	scoreList, _ := nd.computeScores(timeSeries)
 	return scoreList
