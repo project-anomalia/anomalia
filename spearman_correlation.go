@@ -47,11 +47,7 @@ func (sc *SpearmanCorrelation) Run() float64 {
 			}
 		}
 
-		sum := 0
-		for _, val := range duplicateValues {
-			sum += val
-		}
-
+		sum := SumInts(duplicateValues)
 		avg := float64(sum+len(duplicateValues)) / float64(len(duplicateValues))
 		ranks[pos].xRank = avg
 		for index := 1; index < len(duplicateValues); index++ {
@@ -75,11 +71,7 @@ func (sc *SpearmanCorrelation) Run() float64 {
 			}
 		}
 
-		sum := 0
-		for _, val := range duplicateValues {
-			sum += val
-		}
-
+		sum := SumInts(duplicateValues)
 		avg := float64(sum+len(duplicateValues)) / float64(len(duplicateValues))
 		ranks[pos].yRank = avg
 		for index := 1; index < len(duplicateValues); index++ {

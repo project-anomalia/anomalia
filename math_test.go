@@ -15,8 +15,8 @@ func TestAverage(t *testing.T) {
 	}
 }
 
-func TestSum(t *testing.T) {
-	actual := Sum(input)
+func TestSumFloat64s(t *testing.T) {
+	actual := SumFloat64s(input)
 	expected := 55.0
 	if actual != expected {
 		t.Fatalf("expected %v, got %v", expected, actual)

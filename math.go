@@ -7,12 +7,21 @@ import (
 
 // Average returns the average of the input
 func Average(input []float64) float64 {
-	return Sum(input) / float64(len(input))
+	return SumFloat64s(input) / float64(len(input))
 }
 
-// Sum returns the sum of all elements in the input
-func Sum(input []float64) float64 {
+// SumFloat64s returns the sum of all float64 in the input
+func SumFloat64s(input []float64) float64 {
 	var sum float64
+	for _, value := range input {
+		sum += value
+	}
+	return sum
+}
+
+// SumInts returns the sum of all integers in the input.
+func SumInts(input []int) int {
+	var sum int
 	for _, value := range input {
 		sum += value
 	}

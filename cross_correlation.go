@@ -58,6 +58,13 @@ func (cc *CrossCorrelation) Run() float64 {
 	return cc.GetCorrelationResult().Coefficient
 }
 
+func (cc *CrossCorrelation) sanityCheck() error {
+	if cc.current.Size() < 2 || cc.target.Size() < 2 {
+		return errors.New("not enough data points")
+	}
+	return nil
+}
+
 func (cc *CrossCorrelation) detectCorrelation() CorrelationResult {
 	cc.current, cc.target = cc.current.Normalize(), cc.target.Normalize()
 	cc.current.Align(cc.target)
@@ -144,11 +151,4 @@ func findMaxCorrelation(data [][]float64) []float64 {
 		}
 	}
 	return max
-}
-
-func (cc *CrossCorrelation) sanityCheck() error {
-	if cc.current.Size() < 2 || cc.target.Size() < 2 {
-		return errors.New("not enough data points")
-	}
-	return nil
 }
