@@ -1,6 +1,11 @@
 package anomalia
 
-import "encoding/json"
+import (
+	"encoding/csv"
+	"encoding/json"
+	"os"
+	"strconv"
+)
 
 // TimeSeries wrapper for timestamps and their values
 type TimeSeries struct {
@@ -17,6 +22,35 @@ func NewTimeSeries(timestamps []float64, values []float64) *TimeSeries {
 		Timestamps: timestamps,
 		Values:     values,
 	}
+}
+
+// NewTimeSeriesFromCSV create a new time series from a CSV file.
+func NewTimeSeriesFromCSV(path string) *TimeSeries {
+	var (
+		timestamps []float64
+		data       []float64
+	)
+
+	f, _ := os.Open(path)
+	defer func() {
+		if err := f.Close(); err != nil {
+			panic(err)
+		}
+	}()
+
+	r := csv.NewReader(f)
+
+	_, _ = r.Read() // Read the header
+	for rec, err := r.Read(); err == nil; rec, err = r.Read() {
+		// Ignore errors because we assume the file to be correct
+		if timestamp, err := strconv.ParseFloat(rec[0], 64); err == nil {
+			timestamps = append(timestamps, timestamp)
+		}
+		if val, err := strconv.ParseFloat(rec[1], 64); err == nil {
+			data = append(data, val)
+		}
+	}
+	return NewTimeSeries(timestamps, data)
 }
 
 // EarliestTimestamp returns the earliest timestamp in the time series
