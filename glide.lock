@@ -1,0 +1,62 @@
+hash: 380d9f043c34878885e8be812aeb2bc370ad79e268a3e3bd0918239edc979062
+updated: 2019-07-03T19:52:10.145435+02:00
+imports:
+- name: github.com/chewxy/hm
+  version: 61efb3290a086d1335e8954b3734c102126818ba
+- name: github.com/chewxy/math32
+  version: 9a000fcb79dff2019bd78fc28bd676198ff3a616
+- name: github.com/chewxy/stl
+  version: ed9071568c44065f500b88c4eae1bb3694a1f0c3
+  subpackages:
+  - loess
+- name: github.com/gogo/protobuf
+  version: ba06b47c162d49f2af050fb4c75bcbc86a159d5c
+  subpackages:
+  - gogoproto
+  - proto
+  - protoc-gen-gogo/descriptor
+- name: github.com/golang/protobuf
+  version: b5d812f8a3706043e23a9cd5babf2e5423744d30
+  subpackages:
+  - proto
+- name: github.com/google/flatbuffers
+  version: bf9eb67ab9371755c6bcece13cadc7693bcbf264
+  subpackages:
+  - go
+- name: github.com/pkg/errors
+  version: 27936f6d90f9c8e1145f11ed52ffffbfdb9e0af7
+- name: github.com/project-anomalia/stl
+  version: ed9071568c44065f500b88c4eae1bb3694a1f0c3
+- name: github.com/xtgo/set
+  version: 708d80f4a27458f99f8ca12bd0e638c6ee65627f
+- name: gonum.org/v1/gonum
+  version: 536a303fd62fe10303f5c75bf644af9f54e90c25
+  subpackages:
+  - blas
+  - blas/blas64
+  - blas/cblas128
+  - blas/gonum
+  - floats
+  - internal/asm/c128
+  - internal/asm/c64
+  - internal/asm/f32
+  - internal/asm/f64
+  - internal/cmplx64
+  - internal/math32
+  - lapack
+  - lapack/gonum
+  - lapack/lapack64
+  - mat
+- name: gorgonia.org/tensor
+  version: 663333fb2053f3ceaf5286ede78b8fe80f7ce0af
+  subpackages:
+  - internal/execution
+  - internal/serialization/fb
+  - internal/serialization/pb
+  - internal/storage
+  - native
+- name: gorgonia.org/vecf32
+  version: a06d791a4e66be4d2fcae4530bb67afa232a0dae
+- name: gorgonia.org/vecf64
+  version: d21373a26cc12a37eaab0182a21d0225c3b7ef34
+testImports: []

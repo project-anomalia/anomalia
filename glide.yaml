@@ -1,2 +1,16 @@
 package: .
-import: []
+import:
+- package: github.com/project-anomalia/stl
+  version: v1.3.1
+- package: github.com/google/flatbuffers
+  version: 1.11.0
+  subpackages:
+  - go
+- package: github.com/golang/protobuf
+  version: v1.3.1
+  subpackages:
+  - proto
+- package: github.com/gogo/protobuf
+  version: v1.2.1
+  subpackages:
+  - proto
