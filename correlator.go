@@ -18,12 +18,6 @@ const (
 	Pearson
 )
 
-// TimePeriod represents a time period marked by start and end timestamps.
-type TimePeriod struct {
-	Start float64
-	End   float64
-}
-
 // Correlator holds the correlator configuration.
 type Correlator struct {
 	current, target *TimeSeries

@@ -5,8 +5,6 @@ type Detector struct {
 	threshold float64
 }
 
-type tuple struct{ start, end float64 }
-
 // NewDetector return an instance of the default detector.
 func NewDetector() *Detector {
 	return &Detector{2.0}
@@ -35,7 +33,7 @@ func (d *Detector) GetAnomalies(timeSeries *TimeSeries) []Anomaly {
 		scoreList    = d.GetScores(timeSeries)
 		scores       = scoreList.Zip()
 		anomalies    = make([]Anomaly, 0)
-		intervals    = make([]tuple, 0)
+		intervals    = make([]TimePeriod, 0)
 	)
 
 	// Find all anomalies intervals
@@ -47,7 +45,7 @@ func (d *Detector) GetAnomalies(timeSeries *TimeSeries) []Anomaly {
 				start = timestamp
 			}
 		} else if (start != 0) && (end != 0) {
-			intervals = append(intervals, tuple{start, end})
+			intervals = append(intervals, TimePeriod{start, end})
 			start = 0
 			end = 0
 		}
@@ -55,7 +53,7 @@ func (d *Detector) GetAnomalies(timeSeries *TimeSeries) []Anomaly {
 
 	// Locate the exact anomaly timestamp within each interval
 	for _, interval := range intervals {
-		intervalSeries := timeSeries.Crop(interval.start, interval.end)
+		intervalSeries := timeSeries.Crop(interval.Start, interval.Start)
 		refinedScoreList := NewEma().Run(intervalSeries)
 		maxRefinedScore := refinedScoreList.Max()
 
@@ -66,8 +64,8 @@ func (d *Detector) GetAnomalies(timeSeries *TimeSeries) []Anomaly {
 			anomaly := Anomaly{
 				Timestamp:      maxRefinedTimestamp,
 				Value:          zippedSeries[maxRefinedTimestamp],
-				StartTimestamp: interval.start,
-				EndTimestamp:   interval.end,
+				StartTimestamp: interval.Start,
+				EndTimestamp:   interval.End,
 				Score:          maxRefinedScore,
 				threshold:      d.threshold,
 			}
