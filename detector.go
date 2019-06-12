@@ -2,12 +2,13 @@ package anomalia
 
 // Detector is the default anomaly detector
 type Detector struct {
-	threshold float64
+	threshold  float64
+	timeSeries *TimeSeries
 }
 
 // NewDetector return an instance of the default detector.
 func NewDetector() *Detector {
-	return &Detector{2.0}
+	return &Detector{threshold: 2.0}
 }
 
 // WithThreshold sets the threshold used by the detector.
@@ -16,21 +17,26 @@ func (d *Detector) WithThreshold(threshold float64) *Detector {
 	return d
 }
 
-// GetScores runs the detector on the supplied time series
+// WithTimeSeries sets the time series to run the detector on.
+func (d *Detector) WithTimeSeries(ts *TimeSeries) *Detector {
+	d.timeSeries = ts
+	return d
+}
+
+// GetScores runs the detector on the supplied time series.
 // It uses the Bitmap algorithm to calculate the score list and falls back
 // to the normal distribution algorithm in case of not enough data points in the time series.
-func (d *Detector) GetScores(timeSeries *TimeSeries) *ScoreList {
-	if scoreList := NewBitmap().Run(timeSeries); scoreList != nil {
+func (d *Detector) GetScores() *ScoreList {
+	if scoreList := NewBitmap().Run(d.timeSeries); scoreList != nil {
 		return scoreList
 	}
-	return NewWeightedSum().Run(timeSeries)
+	return NewWeightedSum().Run(d.timeSeries)
 }
 
 // GetAnomalies detects anomalies using the specified threshold on scores
-func (d *Detector) GetAnomalies(timeSeries *TimeSeries) []Anomaly {
+func (d *Detector) GetAnomalies(scoreList *ScoreList) []Anomaly {
 	var (
-		zippedSeries = timeSeries.Zip()
-		scoreList    = d.GetScores(timeSeries)
+		zippedSeries = d.timeSeries.Zip()
 		scores       = scoreList.Zip()
 		anomalies    = make([]Anomaly, 0)
 		intervals    = make([]TimePeriod, 0)
@@ -53,7 +59,7 @@ func (d *Detector) GetAnomalies(timeSeries *TimeSeries) []Anomaly {
 
 	// Locate the exact anomaly timestamp within each interval
 	for _, interval := range intervals {
-		intervalSeries := timeSeries.Crop(interval.Start, interval.Start)
+		intervalSeries := d.timeSeries.Crop(interval.Start, interval.Start)
 		refinedScoreList := NewEma().Run(intervalSeries)
 		maxRefinedScore := refinedScoreList.Max()
 

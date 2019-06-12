@@ -4,7 +4,7 @@ import "testing"
 
 func TestRunDefaultDetectorOnSmallDataset(t *testing.T) {
 	timeSeries := generateFakeTimeSeries(100)
-	scoreList := NewDetector().GetScores(timeSeries)
+	scoreList := NewDetector().WithTimeSeries(timeSeries).GetScores()
 	if scoreList == nil {
 		t.Fatalf("score list cannot be nil")
 	}
@@ -12,7 +12,10 @@ func TestRunDefaultDetectorOnSmallDataset(t *testing.T) {
 
 func TestRunDefaultDetectorOnLargeDataset(t *testing.T) {
 	timeSeries := generateFakeTimeSeries(3000)
-	scoreList := NewDetector().WithThreshold(4.5).GetScores(timeSeries)
+	scoreList := NewDetector().
+		WithTimeSeries(timeSeries).
+		WithThreshold(4.5).
+		GetScores()
 	if scoreList == nil {
 		t.Fatalf("score list cannot be nil")
 	}
@@ -20,7 +23,10 @@ func TestRunDefaultDetectorOnLargeDataset(t *testing.T) {
 
 func TestGetAnomaliesUsingDefaultDetector(t *testing.T) {
 	timeSeries := generateFakeTimeSeries(2000)
-	anomalies := NewDetector().WithThreshold(3.0).GetAnomalies(timeSeries)
+	detector := NewDetector().WithTimeSeries(timeSeries).WithThreshold(3.0)
+
+	scores := detector.GetScores()
+	anomalies := detector.GetAnomalies(scores)
 	if len(anomalies) != 1 {
 		t.Fatalf("should be a least one anomaly")
 	}
