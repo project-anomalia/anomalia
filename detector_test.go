@@ -31,3 +31,18 @@ func TestGetAnomaliesUsingDefaultDetector(t *testing.T) {
 		t.Fatalf("should be a least one anomaly")
 	}
 }
+
+func TestGetAnomaliesInTestData(t *testing.T) {
+	ts := NewTimeSeriesFromCSV("testdata/airline-passengers.csv")
+	detector := NewDetector().WithTimeSeries(ts).WithThreshold(1.3)
+
+	scoreList := NewSTL().WithWidth(15).WithPeriodicity(12).WithMethod(Multiplicative).Run(ts).Denoise()
+	if scoreList == nil {
+		t.Fatalf("score list cannot be nil")
+	}
+
+	anomalies := detector.GetAnomalies(scoreList)
+	if len(anomalies) != 2 {
+		t.Fatalf("there are exactly 2 anomalies")
+	}
+}
