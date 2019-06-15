@@ -1,6 +1,6 @@
 # anomalia
 
-`anomalia` is zero-dependency Go library for time series data analysis.
+`anomalia` is a lightweight Go library for time series data analysis.
 
 It supports anomaly detection and correlation. The API is simple and configurable in the sense that you can choose which algorithm suits your needs for anomaly detection and correlation.
 
@@ -35,11 +35,17 @@ import (
 func main() {
     // Load the time series from an external source.
     // It returns an instance of TimeSeries struct which holds the timestamps and their values.
-    timeSeries := loadTimeSeriesFromAnExternalSource()
-
+    timeSeries := anomalia.NewTimeSeriesFromCSV("testdata/co2.csv")
+    
     // Instantiate the default detector which uses a threshold to determines anomalies.
     // Anomalies are data points that have a score above the threshold (2.5 in this case).
-    anomalies := anomalia.NewDetector().WithThreshold(2.5).GetAnomalies(timeSeries)
+    detector := anomalia.NewDetector().WithThreshold(2.5).WithTimeSeries(timeSeries)
+
+    // Calculate the scores for each data point in the time series
+    scores := detector.GetScores()
+
+    // Find anomalies based the calculated scores
+    anomalies := detector.GetAnomalies(scores)
 
     // Iterate over detected anomalies and print their exact timestamp and value.
     for _, anomaly := range anomalies {
@@ -47,6 +53,13 @@ func main() {
     }
 }
 ```
+
+The example above uses some preset algorithms to calculate the scores. It might not be suited for your case but you can
+use any of the available algorithms.
+
+All algorithms follow a straightforward design so you could get the scores based on your configuration and understanding
+of the data, and pass those scores to `Detector.GetAnomalies(*ScoreList)` function.
+
 
 And another example to check if two time series have a relationship or correlated:
 
@@ -56,8 +69,8 @@ package main
 import "github.com/amrfaissal/anomalia"
 
 func main() {
-    a := loadTimeSeriesA()
-    b := loadTimeSeriesB()
+    a := anomalia.NewTimeSeriesFromCSV("testdata/co2.csv")
+    b := anomalia.NewTimeSeriesFromCSV("testdata/airline-passengers.csv")
 
     // If the time series data points do not follow a certain distribution
     // we use the Spearman correlator.
@@ -76,12 +89,10 @@ func main() {
 If the correlation algorithm accepts any additional parameters (see different implementations), you can pass them as a
  `float64` slice to the `WithMethod(method, options)` method.
 
-## TODO / Suggestions
+## Roadmap
 
 - CLI tool for rapid experimentation
-- More algorithms such as STL with LOESS
 - Benchmarks
-- Move to a separate organization
 
 ## Resources
 
