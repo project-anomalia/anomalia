@@ -12,8 +12,8 @@ func NewAbsoluteThreshold() *AbsoluteThreshold {
 	return &AbsoluteThreshold{}
 }
 
-// WithBounds sets both lower and upper thresholds.
-func (at *AbsoluteThreshold) WithBounds(lower, upper float64) *AbsoluteThreshold {
+// Thresholds sets both lower and upper thresholds.
+func (at *AbsoluteThreshold) Thresholds(lower, upper float64) Algorithm {
 	at.lowerThreshold = lower
 	at.upperThreshold = upper
 	return at
