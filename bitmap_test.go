@@ -13,16 +13,8 @@ var (
 )
 
 func TestRunWithBitmap(t *testing.T) {
-	//
-	// Generate the data set
-	//
 	timeSeries := generateFakeTimeSeries(2000)
-
-	//
-	// Run the bitmap algorithm
-	//
-	bitmap := NewBitmap()
-	scoreList := bitmap.Run(timeSeries)
+	scoreList := NewBitmap().ChunkSize(3).Precision(5).Run(timeSeries)
 	if scoreList == nil {
 		t.Fatalf("score list cannot be nil")
 	}
@@ -30,15 +22,14 @@ func TestRunWithBitmap(t *testing.T) {
 	if len(scoreList.Scores) != len(timeSeries.Timestamps) {
 		t.Fatalf("both time series and score list dimensions do not match")
 	}
+}
 
-	//
-	// Use Case: Not enough data points
-	//
-	timeSeries = &TimeSeries{
+func TestRunBitmapWhenNotEnoughDataPoints(t *testing.T) {
+	timeSeries := &TimeSeries{
 		Timestamps: []float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 		Values:     []float64{1, 5, 52, 49, 49, 1.5, 48, 50, 53, 44},
 	}
-	scoreList = bitmap.Run(timeSeries)
+	scoreList := NewBitmap().Run(timeSeries)
 	if scoreList != nil {
 		t.Fatalf("score list must be nil (not enough data points)")
 	}

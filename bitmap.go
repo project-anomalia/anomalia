@@ -10,44 +10,70 @@ import (
 const minimalPointsInWindows = 50
 
 // Bitmap holds bitmap algorithm configuration.
-// The bitmap algorithm breaks the time series into chunks and uses
+//
+// The Bitmap algorithm breaks the time series into chunks and uses
 // the frequency of similar chunks to determine anomalies scores.
 // The scoring happens by sliding both lagging and future windows.
 type Bitmap struct {
-	ChunkSize        int
-	Precision        int
-	LagWindowSize    int
-	FutureWindowSize int
+	chunkSize        int
+	precision        int
+	lagWindowSize    int
+	futureWindowSize int
 }
 
-// NewBitmap returns Bitmap instance
+// NewBitmap returns Bitmap instance.
 func NewBitmap() *Bitmap {
 	return &Bitmap{
-		ChunkSize:        2,
-		Precision:        4,
-		LagWindowSize:    0,
-		FutureWindowSize: 0,
+		chunkSize:        2,
+		precision:        4,
+		lagWindowSize:    0,
+		futureWindowSize: 0,
 	}
+}
+
+// ChunkSize sets the chunk size to use (defaults to 2).
+func (b *Bitmap) ChunkSize(size int) *Bitmap {
+	b.chunkSize = size
+	return b
+}
+
+// Precision sets the precision.
+func (b *Bitmap) Precision(p int) *Bitmap {
+	b.precision = p
+	return b
+}
+
+// LagWindowSize sets the lag window size (defaults to 0).
+func (b *Bitmap) LagWindowSize(size int) *Bitmap {
+	b.lagWindowSize = size
+	return b
+}
+
+// futureWindowSize sets the future window size (default to 0).
+func (b *Bitmap) FutureWindowSize(size int) *Bitmap {
+	b.futureWindowSize = size
+	return b
 }
 
 // Run runs the bitmap algorithm over the time series
-func (bit *Bitmap) Run(timeSeries *TimeSeries) *ScoreList {
-	scoreList, _ := bit.computeScores(timeSeries)
+func (b *Bitmap) Run(timeSeries *TimeSeries) *ScoreList {
+	scoreList, _ := b.computeScores(timeSeries)
 	return scoreList
 }
 
-func (bit *Bitmap) computeScores(timeSeries *TimeSeries) (*ScoreList, error) {
+func (b *Bitmap) computeScores(timeSeries *TimeSeries) (*ScoreList, error) {
 	// Update both lagging and future windows size
-	bit.LagWindowSize = int(0.0125 * float64(len(timeSeries.Timestamps)))
-	bit.FutureWindowSize = int(0.0125 * float64(len(timeSeries.Timestamps)))
+	b.lagWindowSize = int(0.0125 * float64(len(timeSeries.Timestamps)))
+	b.futureWindowSize = int(0.0125 * float64(len(timeSeries.Timestamps)))
 
 	// Perform sanity check
-	if _, err := bit.sanityCheck(timeSeries); err != nil {
+	if _, err := b.sanityCheck(timeSeries); err != nil {
 		return nil, err
 	}
-	sax := bit.generateSAX(timeSeries)
-	laggingsMaps, futureMaps := bit.constructAllSAXChunks(timeSeries, sax)
-	dimension := len(timeSeries.Timestamps)
+
+	sax := b.generateSAX(timeSeries)
+	laggingsMaps, futureMaps := b.constructAllSAXChunks(timeSeries, sax)
+	dimension := timeSeries.Size()
 
 	computeScoreBetweenTwoWindows := func(idx int) float64 {
 		lagWindowChunk := laggingsMaps[idx]
@@ -73,7 +99,7 @@ func (bit *Bitmap) computeScores(timeSeries *TimeSeries) (*ScoreList, error) {
 	}
 
 	scores := mapSliceWithIndex(timeSeries.Timestamps, func(idx int, timestamp float64) float64 {
-		if (idx < bit.LagWindowSize) || (idx > (dimension - bit.FutureWindowSize)) {
+		if (idx < b.lagWindowSize) || (idx > (dimension - b.futureWindowSize)) {
 			return 0.0
 		}
 		return computeScoreBetweenTwoWindows(idx)
@@ -84,13 +110,13 @@ func (bit *Bitmap) computeScores(timeSeries *TimeSeries) (*ScoreList, error) {
 }
 
 // generateSAX generates the SAX representation of the time series values
-func (bit *Bitmap) generateSAX(timeSeries *TimeSeries) BitmapBinary {
+func (b *Bitmap) generateSAX(timeSeries *TimeSeries) BitmapBinary {
 	sections := make(map[int]float64)
 	min, max := minMax(timeSeries.Values)
 
 	// Break the whole value range into different sections
-	sectionHeight := (max - min) / float64(bit.Precision)
-	for i := 0; i < bit.Precision; i++ {
+	sectionHeight := (max - min) / float64(b.precision)
+	for i := 0; i < b.precision; i++ {
 		sections[i] = min + float64(i)*sectionHeight
 	}
 
@@ -116,25 +142,25 @@ func (bit *Bitmap) generateSAX(timeSeries *TimeSeries) BitmapBinary {
 	return BitmapBinary(saxBuilder.String())
 }
 
-func (bit *Bitmap) constructChunkFrequencyMap(sax BitmapBinary) map[BitmapBinary]int {
+func (b *Bitmap) constructChunkFrequencyMap(sax BitmapBinary) map[BitmapBinary]int {
 	frequencyMap := make(map[BitmapBinary]int)
 	saxLength := sax.Len()
 	for i := 0; i < saxLength; i++ {
-		if i+bit.ChunkSize <= saxLength {
-			chunk := sax.Slice(i, i+bit.ChunkSize)
+		if i+b.chunkSize <= saxLength {
+			chunk := sax.Slice(i, i+b.chunkSize)
 			frequencyMap[chunk]++
 		}
 	}
 	return frequencyMap
 }
 
-func (bit *Bitmap) constructAllSAXChunks(timeSeries *TimeSeries, sax BitmapBinary) (map[int]map[BitmapBinary]int, map[int]map[BitmapBinary]int) {
+func (b *Bitmap) constructAllSAXChunks(timeSeries *TimeSeries, sax BitmapBinary) (map[int]map[BitmapBinary]int, map[int]map[BitmapBinary]int) {
 	laggingsMaps := make(map[int]map[BitmapBinary]int)
 	futureMaps := make(map[int]map[BitmapBinary]int)
-	lws := bit.LagWindowSize
-	fws := bit.FutureWindowSize
-	chunkSize := bit.ChunkSize
-	dimension := len(timeSeries.Values)
+	lws := b.lagWindowSize
+	fws := b.futureWindowSize
+	chunkSize := b.chunkSize
+	dimension := timeSeries.Size()
 
 	var lwLeaveChunk, lwEnterChunk, fwLeaveChunk, fwEnterChunk BitmapBinary
 
@@ -143,11 +169,11 @@ func (bit *Bitmap) constructAllSAXChunks(timeSeries *TimeSeries, sax BitmapBinar
 			laggingsMaps[i] = nil
 		} else {
 			if laggingsMaps[i-1] == nil {
-				laggingsMaps[i] = bit.constructChunkFrequencyMap(sax[i-lws : i])
+				laggingsMaps[i] = b.constructChunkFrequencyMap(sax[i-lws : i])
 				lwLeaveChunk = sax.Slice(0, chunkSize)
 				lwEnterChunk = sax.Slice(i-chunkSize+1, i+1)
 
-				futureMaps[i] = bit.constructChunkFrequencyMap(sax[i : i+fws])
+				futureMaps[i] = b.constructChunkFrequencyMap(sax[i : i+fws])
 				fwLeaveChunk = sax.Slice(i, i+chunkSize)
 				fwEnterChunk = sax.Slice(i+fws+1-chunkSize, i+fws+1)
 			} else {
@@ -172,9 +198,9 @@ func (bit *Bitmap) constructAllSAXChunks(timeSeries *TimeSeries, sax BitmapBinar
 	return laggingsMaps, futureMaps
 }
 
-func (bit *Bitmap) sanityCheck(timeSeries *TimeSeries) (*TimeSeries, error) {
-	windowsDimension := bit.LagWindowSize + bit.FutureWindowSize
-	if (len(timeSeries.Timestamps) < windowsDimension) || (windowsDimension < minimalPointsInWindows) {
+func (b *Bitmap) sanityCheck(timeSeries *TimeSeries) (*TimeSeries, error) {
+	windowsDimension := b.lagWindowSize + b.futureWindowSize
+	if (timeSeries.Size() < windowsDimension) || (windowsDimension < minimalPointsInWindows) {
 		return nil, errors.New("not enough data points")
 	}
 	return timeSeries, nil
