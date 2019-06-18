@@ -6,8 +6,8 @@ func TestRunCorrelatorWithXCorr(t *testing.T) {
 	timeSeriesA := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
 	timeSeriesB := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
 
-	coefficient := NewCorrelator().WithTimeSeries(timeSeriesA, timeSeriesB).
-		WithMethod(XCorr, []float64{30, 0.01}).
+	coefficient := NewCorrelator(timeSeriesA, timeSeriesB).
+		CorrelationMethod(XCorr, []float64{30, 0.01}).
 		UseAnomalyScore(true).
 		Run()
 	if coefficient != 1.0 {
@@ -19,9 +19,9 @@ func TestRunCorrelatorWithSpearmanRank(t *testing.T) {
 	timeSeriesA := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
 	timeSeriesB := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
 
-	coefficient := NewCorrelator().WithTimeSeries(timeSeriesA, timeSeriesB).
-		WithMethod(SpearmanRank, nil).
-		WithTimePeriod(0, 2).
+	coefficient := NewCorrelator(timeSeriesA, timeSeriesB).
+		CorrelationMethod(SpearmanRank, nil).
+		TimePeriod(0, 2).
 		Run()
 	if coefficient != 1.0 {
 		t.Fatalf("incorrect coefficient: time series are exactly the same")
@@ -32,9 +32,7 @@ func TestRunCorrelatorWithPearson(t *testing.T) {
 	timeSeriesA := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
 	timeSeriesB := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
 
-	coefficient := NewCorrelator().WithTimeSeries(timeSeriesA, timeSeriesB).
-		WithMethod(Pearson, nil).
-		Run()
+	coefficient := NewCorrelator(timeSeriesA, timeSeriesB).CorrelationMethod(Pearson, nil).Run()
 	if coefficient != 1.0 {
 		t.Fatalf("incorrect coefficient: time series are exactly the same")
 	}
@@ -51,10 +49,7 @@ func TestRunPearsonCorrelationWhenTimeSeriesHaveDifferentSizes(t *testing.T) {
 		}
 	}()
 
-	NewCorrelator().
-		WithTimeSeries(timeSeriesA, timeSeriesB).
-		WithMethod(Pearson, nil).
-		Run()
+	NewCorrelator(timeSeriesA, timeSeriesB).CorrelationMethod(Pearson, nil).Run()
 }
 
 func TestXCorrelationWhenNotEnoughDataPoints(t *testing.T) {
@@ -67,10 +62,8 @@ func TestXCorrelationWhenNotEnoughDataPoints(t *testing.T) {
 			t.Errorf("correlator did not panic")
 		}
 	}()
-	NewCorrelator().
-		WithTimeSeries(timeSeriesA, timeSeriesB).
-		UseAnomalyScore(true).
-		Run()
+
+	NewCorrelator(timeSeriesA, timeSeriesB).UseAnomalyScore(true).Run()
 }
 
 func TestRunSpearmanCorrelationWhenTimeSeriesHaveDifferentSizes(t *testing.T) {
@@ -84,8 +77,5 @@ func TestRunSpearmanCorrelationWhenTimeSeriesHaveDifferentSizes(t *testing.T) {
 		}
 	}()
 
-	NewCorrelator().
-		WithTimeSeries(timeSeriesA, timeSeriesB).
-		WithMethod(SpearmanRank, nil).
-		Run()
+	NewCorrelator(timeSeriesA, timeSeriesB).CorrelationMethod(SpearmanRank, nil).Run()
 }

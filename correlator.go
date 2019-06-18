@@ -26,28 +26,24 @@ type Correlator struct {
 }
 
 // NewCorrelator returns an instance of the correlation algorithm.
-func NewCorrelator() *Correlator {
-	return &Correlator{}
-}
-
-// WithTimeSeries sets both current and target time series to run correlation on.
-func (c *Correlator) WithTimeSeries(current, target *TimeSeries) *Correlator {
+func NewCorrelator(current, target *TimeSeries) *Correlator {
 	if current == nil || target == nil {
 		panic("either current or target time series cannot be nil")
 	}
-	c.current = current
-	c.target = target
-	return c
+	return &Correlator{
+		current: current,
+		target:  target,
+	}
 }
 
-// WithMethod specifies which correlation method to use (XCross or SpearmanRank).
-func (c *Correlator) WithMethod(method CorrelationMethod, options []float64) *Correlator {
+// CorrelationMethod specifies which correlation method to use (XCross or SpearmanRank).
+func (c *Correlator) CorrelationMethod(method CorrelationMethod, options []float64) *Correlator {
 	c.algorithm = c.getCorrelationAlgorithmByMethod(method, options)
 	return c
 }
 
 // WithTimePeriod crops the current and target time series to specified range.
-func (c *Correlator) WithTimePeriod(start, end float64) *Correlator {
+func (c *Correlator) TimePeriod(start, end float64) *Correlator {
 	c.current = c.current.Crop(start, end)
 	c.target = c.target.Crop(start, end)
 	return c
