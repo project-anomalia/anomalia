@@ -4,7 +4,7 @@ import "testing"
 
 func TestRunDefaultDetectorOnSmallDataset(t *testing.T) {
 	timeSeries := generateFakeTimeSeries(100)
-	scoreList := NewDetector().WithTimeSeries(timeSeries).GetScores()
+	scoreList := NewDetector(timeSeries).GetScores()
 	if scoreList == nil {
 		t.Fatalf("score list cannot be nil")
 	}
@@ -12,10 +12,7 @@ func TestRunDefaultDetectorOnSmallDataset(t *testing.T) {
 
 func TestRunDefaultDetectorOnLargeDataset(t *testing.T) {
 	timeSeries := generateFakeTimeSeries(3000)
-	scoreList := NewDetector().
-		WithTimeSeries(timeSeries).
-		WithThreshold(4.5).
-		GetScores()
+	scoreList := NewDetector(timeSeries).Threshold(4.5).GetScores()
 	if scoreList == nil {
 		t.Fatalf("score list cannot be nil")
 	}
@@ -23,7 +20,7 @@ func TestRunDefaultDetectorOnLargeDataset(t *testing.T) {
 
 func TestGetAnomaliesUsingDefaultDetector(t *testing.T) {
 	timeSeries := generateFakeTimeSeries(2000)
-	detector := NewDetector().WithTimeSeries(timeSeries).WithThreshold(3.0)
+	detector := NewDetector(timeSeries).Threshold(3.0)
 
 	scores := detector.GetScores()
 	anomalies := detector.GetAnomalies(scores)
@@ -34,7 +31,7 @@ func TestGetAnomaliesUsingDefaultDetector(t *testing.T) {
 
 func TestGetAnomaliesInTestData(t *testing.T) {
 	ts := NewTimeSeriesFromCSV("testdata/airline-passengers.csv")
-	detector := NewDetector().WithTimeSeries(ts).WithThreshold(1.3)
+	detector := NewDetector(ts).Threshold(1.3)
 
 	scoreList := NewSTL().WithWidth(15).WithPeriodicity(12).WithMethod(Multiplicative).Run(ts).Denoise()
 	if scoreList == nil {

@@ -7,19 +7,13 @@ type Detector struct {
 }
 
 // NewDetector return an instance of the default detector.
-func NewDetector() *Detector {
-	return &Detector{threshold: 2.0}
+func NewDetector(ts *TimeSeries) *Detector {
+	return &Detector{threshold: 2.0, timeSeries: ts}
 }
 
 // WithThreshold sets the threshold used by the detector.
-func (d *Detector) WithThreshold(threshold float64) *Detector {
+func (d *Detector) Threshold(threshold float64) *Detector {
 	d.threshold = threshold
-	return d
-}
-
-// WithTimeSeries sets the time series to run the detector on.
-func (d *Detector) WithTimeSeries(ts *TimeSeries) *Detector {
-	d.timeSeries = ts
 	return d
 }
 

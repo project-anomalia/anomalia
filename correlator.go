@@ -62,9 +62,8 @@ func (c *Correlator) Run() float64 {
 	}
 
 	if c.useAnomalyScore {
-		detector := NewDetector()
-		c.current = getAnomalyScores(detector.WithTimeSeries(c.current))
-		c.target = getAnomalyScores(detector.WithTimeSeries(c.target))
+		c.current = getAnomalyScores(NewDetector(c.current))
+		c.target = getAnomalyScores(NewDetector(c.target))
 	}
 
 	return c.algorithm.Run()
