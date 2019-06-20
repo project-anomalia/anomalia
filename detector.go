@@ -11,7 +11,7 @@ func NewDetector(ts *TimeSeries) *Detector {
 	return &Detector{threshold: 2.0, timeSeries: ts}
 }
 
-// WithThreshold sets the threshold used by the detector.
+// Threshold sets the threshold used by the detector.
 func (d *Detector) Threshold(threshold float64) *Detector {
 	d.threshold = threshold
 	return d
