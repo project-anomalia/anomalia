@@ -36,14 +36,14 @@ func NewCrossCorrelation(current *TimeSeries, target *TimeSeries) *CrossCorrelat
 	}
 }
 
-// WithMaxShift sets the maximal shift in seconds.
-func (cc *CrossCorrelation) WithMaxShift(shift float64) *CrossCorrelation {
+// MaxShift sets the maximal shift in seconds.
+func (cc *CrossCorrelation) MaxShift(shift float64) *CrossCorrelation {
 	cc.maxShift = shift * 1000
 	return cc
 }
 
-// WithImpact sets impact of shift on shifted correlation coefficient.
-func (cc *CrossCorrelation) WithImpact(impact float64) *CrossCorrelation {
+// Impact sets impact of shift on shifted correlation coefficient.
+func (cc *CrossCorrelation) Impact(impact float64) *CrossCorrelation {
 	cc.impact = impact
 	return cc
 }

@@ -42,7 +42,7 @@ func (c *Correlator) CorrelationMethod(method CorrelationMethod, options []float
 	return c
 }
 
-// WithTimePeriod crops the current and target time series to specified range.
+// TimePeriod crops the current and target time series to specified range.
 func (c *Correlator) TimePeriod(start, end float64) *Correlator {
 	c.current = c.current.Crop(start, end)
 	c.target = c.target.Crop(start, end)
@@ -75,9 +75,7 @@ func (c *Correlator) getCorrelationAlgorithmByMethod(method CorrelationMethod, o
 	case XCorr:
 		algorithm = NewCrossCorrelation(c.current, c.target)
 		if options != nil && len(options) > 0 {
-			algorithm = algorithm.(*CrossCorrelation).
-				WithMaxShift(options[0]).
-				WithImpact(options[1])
+			algorithm = algorithm.(*CrossCorrelation).MaxShift(options[0]).Impact(options[1])
 		}
 	case SpearmanRank:
 		algorithm = NewSpearmanCorrelation(c.current, c.target)

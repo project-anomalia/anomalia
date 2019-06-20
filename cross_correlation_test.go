@@ -5,9 +5,7 @@ import "testing"
 func TestNewCrossCorrelation(t *testing.T) {
 	timeSeriesA := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{1, 2, -2, 4, 2, 3, 1, 0})
 	timeSeriesB := NewTimeSeries([]float64{0, 1, 2, 3, 4, 5, 6, 7}, []float64{2, 3, -2, 3, 2, 4, 1, -1})
-	correlator := NewCrossCorrelation(timeSeriesA, timeSeriesB).
-		WithMaxShift(30).
-		WithImpact(0.01)
+	correlator := NewCrossCorrelation(timeSeriesA, timeSeriesB).MaxShift(30).Impact(0.01)
 	if correlator == nil {
 		t.Fatalf("failed to initialize correlator")
 	}
