@@ -15,14 +15,14 @@ func NewEma() *ExponentialMovingAverage {
 	return &ExponentialMovingAverage{2, 0.2}
 }
 
-// WithLagWindowSize sets the lagging window size.
-func (ema *ExponentialMovingAverage) WithLagWindowSize(size int) *ExponentialMovingAverage {
+// LagWindowSize sets the lagging window size.
+func (ema *ExponentialMovingAverage) LagWindowSize(size int) *ExponentialMovingAverage {
 	ema.lagWindowSize = size
 	return ema
 }
 
-// WithSmoothingFactor sets the smoothing factor.
-func (ema *ExponentialMovingAverage) WithSmoothingFactor(factor float64) *ExponentialMovingAverage {
+// SmoothingFactor sets the smoothing factor.
+func (ema *ExponentialMovingAverage) SmoothingFactor(factor float64) *ExponentialMovingAverage {
 	ema.smoothingFactor = factor
 	return ema
 }

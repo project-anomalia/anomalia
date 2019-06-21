@@ -13,8 +13,8 @@ func NewDerivative() *Derivative {
 	return &Derivative{0.2}
 }
 
-// WithSmoothingFactor sets the smoothing factor.
-func (d *Derivative) WithSmoothingFactor(factor float64) *Derivative {
+// SmoothingFactor sets the smoothing factor.
+func (d *Derivative) SmoothingFactor(factor float64) *Derivative {
 	d.smoothingFactor = factor
 	return d
 }
