@@ -1,16 +1,24 @@
 package anomalia
 
-// NormalDistribution holds the normal distribution algorithm configuration
+const defaultEpsilonThreshold = 0.0025
+
+// NormalDistribution holds the normal distribution algorithm configuration.
 type NormalDistribution struct {
-	EpsilonThreshold float64
+	epsilonThreshold float64
 }
 
-// NewNormalDistribution returns normal distribution instance
+// NewNormalDistribution returns normal distribution instance.
 func NewNormalDistribution() *NormalDistribution {
-	return &NormalDistribution{0.0025}
+	return &NormalDistribution{defaultEpsilonThreshold}
 }
 
-// Run runs the normal distribution algorithm over the time series
+// EpsilonThreshold sets the Gaussian epsilon threshold.
+func (nd *NormalDistribution) EpsilonThreshold(threshold float64) *NormalDistribution {
+	nd.epsilonThreshold = threshold
+	return nd
+}
+
+// Run runs the normal distribution algorithm over the time series.
 func (nd *NormalDistribution) Run(timeSeries *TimeSeries) *ScoreList {
 	scoreList, _ := nd.computeScores(timeSeries)
 	return scoreList
@@ -22,7 +30,7 @@ func (nd *NormalDistribution) computeScores(timeSeries *TimeSeries) (*ScoreList,
 
 	scores := mapSlice(timeSeries.Values, func(value float64) float64 {
 		score := Pdf(mean, std)(value)
-		if score < nd.EpsilonThreshold {
+		if score < nd.epsilonThreshold {
 			return score
 		}
 		return 0.0
