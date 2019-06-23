@@ -33,7 +33,7 @@ func TestGetAnomaliesInTestData(t *testing.T) {
 	ts := NewTimeSeriesFromCSV("testdata/airline-passengers.csv")
 	detector := NewDetector(ts).Threshold(1.3)
 
-	scoreList := NewSTL().WithWidth(15).WithPeriodicity(12).WithMethod(Multiplicative).Run(ts).Denoise()
+	scoreList := NewSTL().Width(15).Periodicity(12).MethodType(Multiplicative).Run(ts).Denoise()
 	if scoreList == nil {
 		t.Fatalf("score list cannot be nil")
 	}

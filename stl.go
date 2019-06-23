@@ -12,8 +12,9 @@ const (
 	Multiplicative
 )
 
-// STL holds STL With Loess algorithm configuration.
-// The STL with Loess algorithm decomposes a time series into seasonal, trend and remainder components.
+// STL holds Seasonal-Trend With Loess algorithm configuration.
+//
+// The STL algorithm decomposes a time series into seasonal, trend and remainder components.
 // The paper describing this algorithm can found here: https://search.proquest.com/openview/cc5001e8a0978a6c029ae9a41af00f21
 type STL struct {
 	periodicity         int
@@ -35,49 +36,49 @@ func NewSTL() *STL {
 	}
 }
 
-func (s *STL) WithPeriodicity(p int) *STL {
+func (s *STL) Periodicity(p int) *STL {
 	s.periodicity = p
 	return s
 }
 
-func (s *STL) WithWidth(w int) *STL {
+func (s *STL) Width(w int) *STL {
 	s.width = w
 	return s
 }
 
-func (s *STL) WithRobustIterations(n int) *STL {
+func (s *STL) RobustIterations(n int) *STL {
 	s.robustIterations = stl.WithRobustIter(n)
 	return s
 }
 
-func (s *STL) WithIterations(n int) *STL {
+func (s *STL) Iterations(n int) *STL {
 	s.iterations = stl.WithIter(n)
 	return s
 }
 
-func (s *STL) WithSeasonalConfig(config *stl.Config) *STL {
+func (s *STL) SeasonalConfig(config *stl.Config) *STL {
 	s.seasonalConfig = config
 	return s
 }
 
-func (s *STL) WithTrendConfig(config *stl.Config) *STL {
+func (s *STL) TrendConfig(config *stl.Config) *STL {
 	s.trendConfig = config
 	return s
 }
 
-func (s *STL) WithLowPassFilterConfig(config *stl.Config) *STL {
+func (s *STL) LowPassFilterConfig(config *stl.Config) *STL {
 	s.lowPassFilterConfig = config
 	return s
 }
 
-func (s *STL) WithMethod(method STLMethod) *STL {
+func (s *STL) MethodType(method STLMethod) *STL {
 	switch method {
 	case Additive:
 		s.method = stl.Additive()
 	case Multiplicative:
 		s.method = stl.Multiplicative()
 	default:
-		panic("invalid STL method")
+		panic("invalid STL method type")
 	}
 	return s
 }

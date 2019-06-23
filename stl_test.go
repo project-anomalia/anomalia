@@ -4,7 +4,7 @@ import "testing"
 
 func TestRunWithSTL(t *testing.T) {
 	ts := NewTimeSeriesFromCSV("testdata/co2.csv")
-	scoreList := NewSTL().WithWidth(35).WithPeriodicity(12).Run(ts)
+	scoreList := NewSTL().Width(35).Periodicity(12).Run(ts)
 
 	if scoreList == nil {
 		t.Fatalf("score list cannot be nil")
