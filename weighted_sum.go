@@ -3,8 +3,9 @@ package anomalia
 import "math"
 
 // WeightedSum holds the weighted sum algorithm configuration.
+//
 // The weighted sum algorithm uses a weighted sum to calculate anomalies scores.
-// It should be used ONLY on small datasets.
+// It should be used ONLY on small data-sets.
 type WeightedSum struct {
 	scoreWeight float64
 	minEmaScore float64
@@ -22,14 +23,14 @@ func NewWeightedSum() *WeightedSum {
 	}
 }
 
-// WithScoreWeight sets Ema's score weight.
-func (ws *WeightedSum) WithScoreWeight(weight float64) *WeightedSum {
+// ScoreWeight sets Ema's score weight.
+func (ws *WeightedSum) ScoreWeight(weight float64) *WeightedSum {
 	ws.scoreWeight = weight
 	return ws
 }
 
-// WithMinEmaScore sets the minimal Ema score above which the weighted score is used.
-func (ws *WeightedSum) WithMinEmaScore(value float64) *WeightedSum {
+// MinEmaScore sets the minimal Ema score above which the weighted score is used.
+func (ws *WeightedSum) MinEmaScore(value float64) *WeightedSum {
 	ws.minEmaScore = value
 	return ws
 }
