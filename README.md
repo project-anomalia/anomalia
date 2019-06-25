@@ -1,6 +1,6 @@
 # anomalia
 
-`anomalia` is a lightweight Go library for time series data analysis.
+`anomalia` is a lightweight Go library for Time Series data analysis.
 
 It supports anomaly detection and correlation. The API is simple and configurable in the sense that you can choose which algorithm suits your needs for anomaly detection and correlation.
 
@@ -36,10 +36,10 @@ func main() {
     // Load the time series from an external source.
     // It returns an instance of TimeSeries struct which holds the timestamps and their values.
     timeSeries := anomalia.NewTimeSeriesFromCSV("testdata/co2.csv")
-    
+
     // Instantiate the default detector which uses a threshold to determines anomalies.
     // Anomalies are data points that have a score above the threshold (2.5 in this case).
-    detector := anomalia.NewDetector().WithThreshold(2.5).WithTimeSeries(timeSeries)
+    detector := anomalia.NewDetector(timeSeries).Threshold(2.5)
 
     // Calculate the scores for each data point in the time series
     scores := detector.GetScores()
@@ -72,11 +72,9 @@ func main() {
     a := anomalia.NewTimeSeriesFromCSV("testdata/co2.csv")
     b := anomalia.NewTimeSeriesFromCSV("testdata/airline-passengers.csv")
 
-    // If the time series data points do not follow a certain distribution
+    // If the time series data points do not follow a certain distribution,
     // we use the Spearman correlator.
-    coefficient := anomalia.NewCorrelator().WithTimeSeries(a, b).
-    	WithMethod(anomalia.SpearmanRank, nil).
-    	Run()
+    coefficient := anomalia.NewCorrelator(a, b).CorrelationMethod(anomalia.SpearmanRank, nil).Run()
 
     // If the coefficient is above a certain threshold (0.7 for example), we consider
     // the time series correlated.
@@ -87,7 +85,7 @@ func main() {
 ```
 
 If the correlation algorithm accepts any additional parameters (see different implementations), you can pass them as a
- `float64` slice to the `WithMethod(method, options)` method.
+ `float64` slice to the `CorrelationMethod(method, options)` method.
 
 ## Roadmap
 
