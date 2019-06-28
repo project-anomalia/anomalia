@@ -1,4 +1,4 @@
-module github.com/amrfaissal/anomalia
+module github.com/project-anomalia/anomalia
 
 require (
 	github.com/chewxy/hm v1.0.0 // indirect

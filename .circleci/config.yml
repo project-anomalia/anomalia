@@ -11,7 +11,7 @@ jobs:
   test-1.10:
     docker:
       - image: circleci/golang:1.10
-    working_directory: /go/src/github.com/amrfaissal/anomalia
+    working_directory: /go/src/github.com/project-anomalia/anomalia
     steps:
       - checkout
       - run: go get -v -t -d ./...
