@@ -11,7 +11,7 @@ It supports anomaly detection and correlation. The API is simple and configurabl
 Installation is done using `go get`:
 
 ```shell
-go get -u github.com/amrfaissal/anomalia
+go get -u github.com/project-anomalia/anomalia
 ```
 
 ## Supported Go Versions
@@ -29,7 +29,7 @@ package main
 
 import (
     "fmt"
-    "github.com/amrfaissal/anomalia"
+    "github.com/project-anomalia/anomalia"
 )
 
 func main() {
@@ -66,7 +66,7 @@ And another example to check if two time series have a relationship or correlate
 ```go
 package main
 
-import "github.com/amrfaissal/anomalia"
+import "github.com/project-anomalia/anomalia"
 
 func main() {
     a := anomalia.NewTimeSeriesFromCSV("testdata/co2.csv")
