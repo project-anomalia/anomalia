@@ -49,7 +49,7 @@ func (b *Bitmap) LagWindowSize(size int) *Bitmap {
 	return b
 }
 
-// futureWindowSize sets the future window size (default to 0).
+// FutureWindowSize sets the future window size (default to 0).
 func (b *Bitmap) FutureWindowSize(size int) *Bitmap {
 	b.futureWindowSize = size
 	return b
